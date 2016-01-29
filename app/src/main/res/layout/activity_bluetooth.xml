@@ -34,5 +34,7 @@
             android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
+    
+    //add button
 
 </RelativeLayout>
