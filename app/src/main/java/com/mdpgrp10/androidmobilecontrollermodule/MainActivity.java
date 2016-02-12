@@ -7,12 +7,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+
 public class MainActivity extends ActionBarActivity {
+
+    Maze onDraw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        setContentView(new Maze(this));
+        //this.onDraw = new Maze(this);
     }
 
 
