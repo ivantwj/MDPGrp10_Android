@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.logging.Handler;
@@ -62,6 +63,8 @@ public class MainActivity extends ActionBarActivity {
     private SharedPreferences spf;
 
     private static int msgCounter = 0;
+
+    Maze maze;
 
     // Whether the Log Fragment is currently shown
     //private boolean mLogShown;
@@ -285,6 +288,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.maze = new Maze(this);
+        RelativeLayout surface = (RelativeLayout)findViewById(R.id.surface);
+        surface.addView(this.maze);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
