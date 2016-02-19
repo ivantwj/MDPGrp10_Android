@@ -3,7 +3,12 @@ package com.mdpgrp10.androidmobilecontrollermodule;
 /**
  * Created by Glambert on 10/2/2016.
  */
+<<<<<<< HEAD
 //hi
+=======
+
+
+>>>>>>> origin/master
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,8 +30,11 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     //private final Bitmap bmp;
     private PanelThread _thread;
     private Canvas pcanvas;
+<<<<<<< HEAD
     private int screenWidth;
     private int screenHeight;
+=======
+>>>>>>> origin/master
 
 
 
@@ -52,6 +60,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
 
         paintArena();
 
+<<<<<<< HEAD
         Paint paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(1);
@@ -83,6 +92,13 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         paint.setAntiAlias(true);
         paint.setColor(Color.BLUE);
         canvas.drawCircle(20, 40, 15, paint);
+=======
+        // draw blue circle with antialiasing turned on
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLUE);
+        canvas.drawCircle(20, 20, 15, paint);
+>>>>>>> origin/master
 
 
     }
@@ -92,9 +108,15 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.GRAY);
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+<<<<<<< HEAD
         this.screenWidth = metrics.widthPixels;
         this.screenHeight = metrics.heightPixels;
         pcanvas.drawRect(0, 0, screenWidth, 3*(screenHeight)/5, paint);
+=======
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+        pcanvas.drawRect(0, 0, 0+screenWidth, (0+screenHeight)/2, paint);
+>>>>>>> origin/master
     }
 
     @Override
