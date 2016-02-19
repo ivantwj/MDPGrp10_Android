@@ -7,15 +7,43 @@
     tools:context="com.mdpgrp10.androidmobilecontrollermodule.MainActivity">
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
+        android:id="@+id/textView" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonUp"
+        android:background="@drawable/ic_up"
+        android:layout_above="@+id/imageButtonLeft"
+        android:layout_toRightOf="@+id/imageButtonLeft"
+        android:layout_toEndOf="@+id/imageButtonLeft" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonDown"
+        android:background="@drawable/ic_down"
         android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/imageButtonLeft"
+        android:layout_toEndOf="@+id/imageButtonLeft" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonLeft"
+        android:background="@drawable/ic_left"
+        android:layout_above="@+id/imageButtonDown"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageButtonRight"
+        android:background="@drawable/ic_right"
+        android:layout_alignTop="@+id/imageButtonLeft"
+        android:layout_toRightOf="@+id/imageButtonDown"
+        android:layout_toEndOf="@+id/imageButtonDown" />
 
 </RelativeLayout>

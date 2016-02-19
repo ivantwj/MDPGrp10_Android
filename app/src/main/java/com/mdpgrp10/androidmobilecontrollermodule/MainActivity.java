@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Message;
@@ -17,10 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.logging.Handler;
+import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
+
 
 //import static android.support.v4.media.routing.MediaRouterJellybean.UserRouteInfo.setStatus;
 
@@ -49,12 +54,19 @@ public class MainActivity extends ActionBarActivity {
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothChatService mChatService = null;
 
+    private ImageButton ImageButtonUp;
+    private ImageButton ImageButtonDown;
+    private ImageButton ImageButtonLeft;
+    private ImageButton ImageButtonRight;
+
+    private SharedPreferences spf;
+
+    private static int msgCounter = 0;
+
     // Whether the Log Fragment is currently shown
     //private boolean mLogShown;
 
-    /*public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-    private Map canvas;*/
+    //private Map canvas;
 
     @Override
     public void onStart() {
@@ -94,6 +106,37 @@ public class MainActivity extends ActionBarActivity {
     private void setupChat() {
         Log.d(TAG, "setupChat()");
         mChatService = new BluetoothChatService(this, mHandler);
+        spf = getSharedPreferences(PREF_DB, Context.MODE_PRIVATE);
+
+        ImageButtonUp = (ImageButton) findViewById(R.id.imageButtonUp);
+        ImageButtonUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(spf.getString(SET_UP, SET_UP_DEFAULT), true);
+            }
+        });
+
+        ImageButtonDown = (ImageButton) findViewById(R.id.imageButtonDown);
+        ImageButtonDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(spf.getString(SET_DOWN, SET_DOWN_DEFAULT), true);
+            }
+        });
+        ImageButtonLeft = (ImageButton) findViewById(R.id.imageButtonLeft);
+        ImageButtonLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(spf.getString(SET_LEFT, SET_LEFT_DEFAULT), true);
+            }
+        });
+        ImageButtonRight = (ImageButton) findViewById(R.id.imageButtonRight);
+        ImageButtonRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
+            }
+        });
     }
 
     @Override
@@ -118,9 +161,9 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
         if (message.length() > 0) {
-//            if(ack)
-//                msgCounter ++;
-//            message = msgCounter + "," + message;
+            //if(ack)
+            //    msgCounter ++;
+            //message = msgCounter + "," + message;
             byte[] send = message.getBytes();
             mChatService.write(send);
             Log.d(TAG, "MSG sent: " + new String(send));
