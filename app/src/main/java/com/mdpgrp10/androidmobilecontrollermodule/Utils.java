@@ -18,6 +18,9 @@ public class Utils {
     public static final String SET_CMD4 = "DB_C4";
     public static final String SET_CMD5 = "DB_C5";
 
+    public static final int Coord = 2131427439;
+    public static final int coord_button = 2130903065;
+
     public static final String SET_EXPLORE_DEFAULT = "e";
     public static final String SET_RACE_DEFAULT = "s";
     public static final String SET_STOP_DEFAULT = "q,";*/
