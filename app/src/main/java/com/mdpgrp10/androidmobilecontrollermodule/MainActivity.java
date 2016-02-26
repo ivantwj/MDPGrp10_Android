@@ -57,10 +57,7 @@ public class MainActivity extends ActionBarActivity {
 
     private String F1;
     private String F2;
-    private String robot_x;
-    private String robot_y;
-    private int f3x;
-    private int f4y;
+
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -261,6 +258,20 @@ public class MainActivity extends ActionBarActivity {
             btStatus.setIcon(R.drawable.bt_off);*/
     }
 
+    public void updateMap(String mapInfo, boolean init){
+        maze.robotChange(mapInfo);
+        if(!init) {
+            sendMessage("Robot_init(" + mapInfo.substring(5, 18)+")", true);
+            /*initRobotMenu.setIcon(R.drawable.location_off);
+            initRobotMenu.setEnabled(false);*/
+        }
+        Log.d(TAG, "Map changed.");
+    }
+
+    public void SendStartPos(int x,int y,String head) {
+        sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         SharedPreferences.Editor editor;
         if (D)
@@ -292,29 +303,7 @@ public class MainActivity extends ActionBarActivity {
                 //onActivityResult_VoiceRecognition(requestCode, requestCode, data);
                 return;
         }
-        if (resultCode == -1) {
-            this.F1 = data.getStringExtra("F1_text");
-            this.F2 = data.getStringExtra("F2_text");
-            editor = getSharedPreferences(PREFS_NAME, 0).edit();
-            editor.putString("F1_text", this.F1);
-            editor.putString("F2_text", this.F2);
-            editor.commit();
-        }
-        if (resultCode == -1) {
-            this.robot_x = data.getStringExtra("robot_x_text");
-            this.robot_y = data.getStringExtra("robot_y_text");
-            editor = getSharedPreferences(PREFS_NAME, 0).edit();
-            editor.putString("robot_x_text", this.robot_x);
-            editor.putString("robot_y_text", this.robot_y);
-            editor.commit();
-            /*this.f3x = Integer.parseInt(this.robot_x.trim());
-            this.f4y = Integer.parseInt(this.robot_y.trim());
-            if (this.f3x < REQUEST_CONNECT_DEVICE_SECURE || this.f4y < REQUEST_CONNECT_DEVICE_SECURE) {
-                this.f3x = REQUEST_CONNECT_DEVICE_SECURE;
-                this.f4y = REQUEST_CONNECT_DEVICE_SECURE;
-            }
-            this.maze.resetMap(this.f3x, this.f4y);*/
-        }
+
     }
 
     private void connectDevice(Intent data, boolean secure) {
@@ -338,16 +327,7 @@ public class MainActivity extends ActionBarActivity {
             finish();
         }
         //setContentView(new Maze(this));
-        SharedPreferences sp = getSharedPreferences(PREFS_NAME, 0);
-        this.robot_x = sp.getString("robot_x_text", " ");
-        this.robot_y = sp.getString("robot_y_text", " ");
-        getWindow().setSoftInputMode(REQUEST_ENABLE_BT);
-        try {
-            this.f3x = Integer.parseInt(this.robot_x.trim());
-            this.f4y = Integer.parseInt(this.robot_y.trim());
-            this.maze.resetMap(this.f3x, this.f4y);
-        } catch (Exception e) {
-        }
+
 
     }
 
@@ -388,10 +368,8 @@ public class MainActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_setXy:
-                serverIntent = new Intent(this, CoordButton.class);
-                serverIntent.putExtra("robot_x_text", this.robot_x);
-                serverIntent.putExtra("robot_y_text", this.robot_y);
-                startActivityForResult(serverIntent, REQUEST_COORD_BUTTON);
+                RobotSettingActivity initRobot = new RobotSettingActivity();
+                initRobot.show(getSupportFragmentManager(), "initRobot");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

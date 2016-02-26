@@ -12,13 +12,13 @@ public class Utils {
     public static final String SET_DOWN = "DB_DO";
     public static final String SET_LEFT = "DB_LE";
     public static final String SET_RIGHT = "DB_RI";
-    /*public static final String SET_CMD1 = "DB_C1";
+    public static final String SET_CMD1 = "DB_C1";
     public static final String SET_CMD2 = "DB_C2";
     public static final String SET_CMD3 = "DB_C3";
     public static final String SET_CMD4 = "DB_C4";
     public static final String SET_CMD5 = "DB_C5";
 
-    public static final int Coord = 2131427439;
+    /*public static final int Coord = 2131427439;
     public static final int coord_button = 2130903065;
 
     public static final String SET_EXPLORE_DEFAULT = "e";
@@ -28,7 +28,7 @@ public class Utils {
     public static final String SET_DOWN_DEFAULT = "s";
     public static final String SET_LEFT_DEFAULT = "a";
     public static final String SET_RIGHT_DEFAULT = "d";
-    /*public static final String SET_CMD1_DEFAULT = "custom command 1";
+    public static final String SET_CMD1_DEFAULT = "custom command 1";
     public static final String SET_CMD2_DEFAULT = "custom command 2";
     public static final String SET_CMD3_DEFAULT = "custom command 3";
     public static final String SET_CMD4_DEFAULT = "custom command 4";
@@ -74,6 +74,6 @@ public class Utils {
                 return HEAD_POS_LEFT;
         }else
             return "N";
-    }*/
+    }
 }
 

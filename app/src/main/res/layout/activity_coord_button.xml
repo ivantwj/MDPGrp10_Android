@@ -1,53 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-    <TextView android:id="@+id/TextView01"
-        android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/robotTx1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Robot X Position"
-        />
-    <EditText android:id="@+id/tb_robot_x"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="X: "/>
+
+    <EditText
+        android:id="@+id/robotInitX"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        />
-    <TextView android:id="@+id/textView1"
-        android:layout_width="match_parent"
+        android:layout_toEndOf="@+id/robotTx1"
+        android:layout_alignTop="@+id/robotTx1"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/robotTx2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Robot_Y_Position"
-        />
-    <EditText android:id="@+id/tb_robot_y"
+        android:layout_toEndOf="@+id/robotInitX"
+        android:layout_marginLeft="20dp"
+        android:layout_alignTop="@+id/robotTx1"
+        android:text="Y: "/>
+
+    <EditText
+        android:id="@+id/robotInitY"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        />
-    <RelativeLayout android:layout_width="match_parent"
+        android:layout_toEndOf="@+id/robotTx2"
+        android:layout_alignTop="@+id/robotTx1"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/robotTx3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
+        android:layout_alignStart="@+id/robotTx1"
+        android:layout_below="@+id/robotTx1"
+        android:layout_marginTop="20dp"
+        android:text="Robot Head Position: "/>
 
-        <Button android:id="@+id/btn_save"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:onClick="button_save"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+    <RadioGroup
+        android:id="@+id/robotInitHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignStart="@+id/robotTx1"
+        android:layout_below="@+id/robotTx3" >
 
-        <Button android:id="@+id/btn_cancel"
+        <RadioButton
+            android:id="@+id/robotUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:onClick="button_cancel"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/btn_save"
-            android:layout_toEndOf="@+id/btn_save" />
-    </RelativeLayout>
+            android:layout_margin="10dp"
+            android:checked="true"
+            android:text="Up"/>
 
-</LinearLayout>
+        <RadioButton
+            android:id="@+id/robotDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Down"/>
+
+        <RadioButton
+            android:id="@+id/robotLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Left"/>
+
+        <RadioButton
+            android:id="@+id/robotRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Right"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/robotInitSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/robotInitHead"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:text="Initialize Robot"/>
+
+</RelativeLayout>
