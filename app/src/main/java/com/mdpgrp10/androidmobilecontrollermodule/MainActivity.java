@@ -307,13 +307,13 @@ public class MainActivity extends ActionBarActivity {
             editor.putString("robot_x_text", this.robot_x);
             editor.putString("robot_y_text", this.robot_y);
             editor.commit();
-            this.f3x = Integer.parseInt(this.robot_x.trim());
+            /*this.f3x = Integer.parseInt(this.robot_x.trim());
             this.f4y = Integer.parseInt(this.robot_y.trim());
             if (this.f3x < REQUEST_CONNECT_DEVICE_SECURE || this.f4y < REQUEST_CONNECT_DEVICE_SECURE) {
                 this.f3x = REQUEST_CONNECT_DEVICE_SECURE;
                 this.f4y = REQUEST_CONNECT_DEVICE_SECURE;
             }
-            this.maze.resetMap(this.f3x, this.f4y);
+            this.maze.resetMap(this.f3x, this.f4y);*/
         }
     }
 
