@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -67,6 +68,8 @@ public class MainActivity extends ActionBarActivity {
     private ImageButton ImageButtonDown;
     private ImageButton ImageButtonLeft;
     private ImageButton ImageButtonRight;
+    private Button ButtonF1;
+    private Button ButtonF2;
 
     private SharedPreferences spf;
 
@@ -146,6 +149,22 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
+            }
+        });
+
+        ButtonF1 = (Button) findViewById(R.id.buttonF1);
+        ButtonF1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String message = spf.getString(SET_CMD1, SET_CMD1_DEFAULT);
+                sendMessage(message, true);
+            }
+        });
+
+        ButtonF2 = (Button) findViewById(R.id.buttonF2);
+        ButtonF2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String message = spf.getString(SET_CMD2, SET_CMD2_DEFAULT);
+                sendMessage(message, true);
             }
         });
     }
@@ -360,6 +379,8 @@ public class MainActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_setCommands:
+                SetFunctionActivity setFunct = new SetFunctionActivity();
+                setFunct.show(getSupportFragmentManager(), "setFunct");
                 return true;
 
 

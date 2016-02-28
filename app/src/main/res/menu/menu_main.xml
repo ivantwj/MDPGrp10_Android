@@ -11,8 +11,8 @@
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_setCommands"
         android:title="Set Commands"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/action_setXy"
         android:title="Set Coordinates"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>

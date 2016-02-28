@@ -22,7 +22,7 @@ public class SetFunctionActivity extends DialogFragment {
     Button buttonSave;
 
     //@Override
-    public View onCreate(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_set_function, container, false);
 
@@ -37,7 +37,7 @@ public class SetFunctionActivity extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        getDialog().setTitle("Preferences");
+        getDialog().setTitle("Set Functions");
         spf = getActivity().getSharedPreferences(PREF_DB, Context.MODE_PRIVATE);
 
         editTextF1.setText(spf.getString(SET_CMD1, SET_CMD1_DEFAULT));
@@ -91,9 +91,9 @@ public class SetFunctionActivity extends DialogFragment {
         /*editor.putString(SET_CMD3, c3);
         editor.putString(SET_CMD4, c4);
         editor.putString(SET_CMD5, c5);*/
-        editor.commit();
+        editor.apply(); //commit()
 
-        Toast.makeText(getActivity(), "Preferences saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Functions saved.", Toast.LENGTH_SHORT).show();
         getDialog().dismiss();
     }
 }
