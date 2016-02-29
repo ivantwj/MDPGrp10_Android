@@ -63,11 +63,6 @@ public class MainActivity extends ActionBarActivity {
     private String F1;
     private String F2;
     private EditText RobotStatus;
-    Thread workerThread;
-    byte[] readBuffer;
-    int readBufferPosition;
-    int counter;
-    volatile boolean stopWorker;
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -79,6 +74,8 @@ public class MainActivity extends ActionBarActivity {
     private ImageButton ImageButtonRight;
     private Button ButtonF1;
     private Button ButtonF2;
+    private Button ButtonExplore;
+    private Button ButtonShortestPath;
 
     private SharedPreferences spf;
 
@@ -176,6 +173,22 @@ public class MainActivity extends ActionBarActivity {
                 sendMessage(message, true);
             }
         });
+
+        ButtonExplore = (Button) findViewById(R.id.buttonExplore);
+        ButtonExplore.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String message = spf.getString(SET_EXPLORE, SET_EXPLORE_DEFAULT);
+                sendMessage(message, true);
+            }
+        });
+
+        ButtonShortestPath = (Button) findViewById(R.id.buttonShortestPath);
+        ButtonShortestPath.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String message = spf.getString(SET_SHORTEST_PATH, SET_SHORTEST_PATH_DEFAULT);
+                sendMessage(message, true);
+            }
+        });
     }
 
     @Override
@@ -246,9 +259,9 @@ public class MainActivity extends ActionBarActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
-                    if(D){
+                    if(D)
                         //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
-                        RobotStatus.setText(readMessage);}
+                        RobotStatus.setText(readMessage);
 
                     /*if(readMessage.length() >= 4) {
                         if ((readMessage.substring(0, 3)).equals("[V]")) {

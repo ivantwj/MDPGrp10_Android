@@ -96,8 +96,8 @@
         android:text="Robot Status:"
         android:id="@+id/textViewRobotStatus"
         android:layout_below="@+id/toggleButton"
-        android:layout_alignLeft="@+id/buttonExplore"
-        android:layout_alignStart="@+id/buttonExplore" />
+        android:layout_alignLeft="@+id/robotStatus"
+        android:layout_alignStart="@+id/robotStatus" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -116,8 +116,17 @@
         android:layout_below="@+id/textViewRobotStatus"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/relativeLayout"
         android:layout_toRightOf="@+id/relativeLayout"
-        android:layout_toEndOf="@+id/relativeLayout" />
+        android:layout_toEndOf="@+id/relativeLayout"
+        android:layout_above="@+id/buttonF2" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shorest Path"
+        android:id="@+id/buttonShortestPath"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/buttonExplore"
+        android:layout_toEndOf="@+id/buttonExplore" />
 
 </RelativeLayout>
