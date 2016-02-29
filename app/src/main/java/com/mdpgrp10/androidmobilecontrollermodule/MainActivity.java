@@ -20,12 +20,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+
 import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
 
 
@@ -58,7 +62,12 @@ public class MainActivity extends ActionBarActivity {
 
     private String F1;
     private String F2;
-
+    private EditText RobotStatus;
+    Thread workerThread;
+    byte[] readBuffer;
+    int readBufferPosition;
+    int counter;
+    volatile boolean stopWorker;
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -237,8 +246,9 @@ public class MainActivity extends ActionBarActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
-                    if(D)
-                        Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
+                    if(D){
+                        //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
+                        RobotStatus.setText(readMessage);}
 
                     /*if(readMessage.length() >= 4) {
                         if ((readMessage.substring(0, 3)).equals("[V]")) {
@@ -339,6 +349,8 @@ public class MainActivity extends ActionBarActivity {
         ((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
         /*RelativeLayout surface = (RelativeLayout) findViewById(R.id.surface);
         surface.addView(this.maze);*/
+
+        RobotStatus = (EditText)findViewById(R.id.robotStatus);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {

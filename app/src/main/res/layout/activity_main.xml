@@ -6,7 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@android:color/black"
     tools:context="com.mdpgrp10.androidmobilecontrollermodule.MainActivity"
-    android:id="@+id/">
+    android:id="@+id/main">
 
     <RelativeLayout
         android:id="@+id/surface"
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:text="Explore"
         android:id="@+id/buttonExplore"
-        android:layout_above="@+id/buttonF2"
+        android:layout_below="@+id/relativeLayout"
         android:layout_toRightOf="@+id/buttonF2"
         android:layout_toEndOf="@+id/buttonF2" />
 
@@ -93,19 +93,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Robot Status"
+        android:text="Robot Status:"
         android:id="@+id/textViewRobotStatus"
-        android:layout_marginTop="61dp"
-        android:layout_alignTop="@+id/relativeLayout"
-        android:layout_toRightOf="@+id/buttonF2" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewRobotStat"
-        android:layout_alignBottom="@+id/textViewRobotStatus"
-        android:layout_toRightOf="@+id/textViewRobotStatus"
-        android:layout_toEndOf="@+id/textViewRobotStatus" />
+        android:layout_below="@+id/toggleButton"
+        android:layout_alignLeft="@+id/buttonExplore"
+        android:layout_alignStart="@+id/buttonExplore" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -115,5 +107,17 @@
         android:layout_alignLeft="@+id/textViewRobotStatus"
         android:layout_alignStart="@+id/textViewRobotStatus"
         android:checked="false" />
+
+    <EditText
+        android:id="@+id/robotStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@+id/textViewRobotStatus"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/relativeLayout"
+        android:layout_toRightOf="@+id/relativeLayout"
+        android:layout_toEndOf="@+id/relativeLayout" />
 
 </RelativeLayout>
