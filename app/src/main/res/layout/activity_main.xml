@@ -95,18 +95,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Robot Status:"
         android:id="@+id/textViewRobotStatus"
-        android:layout_below="@+id/toggleButton"
         android:layout_alignLeft="@+id/robotStatus"
-        android:layout_alignStart="@+id/robotStatus" />
-
-    <ToggleButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toggleButton"
-        android:layout_alignTop="@+id/relativeLayout"
-        android:layout_alignLeft="@+id/textViewRobotStatus"
-        android:layout_alignStart="@+id/textViewRobotStatus"
-        android:checked="false" />
+        android:layout_alignStart="@+id/robotStatus"
+        android:layout_alignTop="@+id/relativeLayout" />
 
     <EditText
         android:id="@+id/robotStatus"
@@ -128,5 +119,26 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/buttonExplore"
         android:layout_toEndOf="@+id/buttonExplore" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tilt Control"
+        android:textOff="Tilt Control Off"
+        android:textOn="Tilt Control On"
+        android:id="@+id/toggleButtonTilt"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_toLeftOf="@+id/buttonF2"
+        android:layout_toStartOf="@+id/buttonF2"
+        android:checked="false" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Switch"
+        android:id="@+id/switch1"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_alignRight="@+id/robotStatus"
+        android:layout_alignEnd="@+id/robotStatus" />
 
 </RelativeLayout>

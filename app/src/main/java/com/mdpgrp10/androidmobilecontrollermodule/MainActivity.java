@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
@@ -20,23 +22,25 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
-
+import static com.mdpgrp10.androidmobilecontrollermodule.BluetoothChatService.*;
 
 //import static android.support.v4.media.routing.MediaRouterJellybean.UserRouteInfo.setStatus;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements SensorEventListener{
 
     public static final String TAG = "MainActivity";
     private static boolean D = true;
@@ -76,6 +80,14 @@ public class MainActivity extends ActionBarActivity {
     private Button ButtonF2;
     private Button ButtonExplore;
     private Button ButtonShortestPath;
+
+    private SensorManager mSensorManager = null;
+    private Sensor mSensor = null;
+    float [] history = new float[2];
+    boolean toggleSet;
+    private ToggleButton toggle;
+
+    private boolean btAutoConnect = false;
 
     private SharedPreferences spf;
 
@@ -119,6 +131,8 @@ public class MainActivity extends ActionBarActivity {
                 mChatService.start();
             }
         }
+
+        //mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         //if(sensorRegistered)
             //sensorMgr.registerListener(MainActivity.this, sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
     }
@@ -189,6 +203,21 @@ public class MainActivity extends ActionBarActivity {
                 sendMessage(message, true);
             }
         });
+
+        toggle = (ToggleButton) findViewById(R.id.toggleButtonTilt);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    toggleSet = true;
+
+                } else {
+                    // The toggle is disabled
+                    toggleSet = false;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -316,12 +345,14 @@ public class MainActivity extends ActionBarActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         SharedPreferences.Editor editor;
+
         if (D)
             Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 if (resultCode == Activity.RESULT_OK) {
                     connectDevice(data, true);
+                    btAutoConnect = true;
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -343,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
                 break;
             default:
                 //onActivityResult_VoiceRecognition(requestCode, requestCode, data);
-                return;
+
         }
 
     }
@@ -370,8 +401,48 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
         }
+
+        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
+
+
+
         //setContentView(new Maze(this));
 
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float xChange = history[0] - event.values[0];
+        float yChange = history[1] - event.values[1];
+
+        history[0] = event.values[0];
+        history[1] = event.values[1];
+
+            if (xChange > 2 && toggleSet){
+                //right
+                sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
+            }
+
+            else if (xChange < -2 && toggleSet){
+                //right
+                sendMessage(spf.getString(SET_LEFT, SET_LEFT_DEFAULT), true);
+            }
+
+            if (yChange > 2 && toggleSet){
+                //up
+                sendMessage(spf.getString(SET_UP, SET_UP_DEFAULT), true);
+            }
+
+            else if (yChange < -2 && toggleSet){
+                //down
+                sendMessage(spf.getString(SET_DOWN, SET_DOWN_DEFAULT), true);
+            }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
