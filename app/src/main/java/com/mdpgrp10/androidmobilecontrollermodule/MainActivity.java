@@ -35,7 +35,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
-import static com.mdpgrp10.androidmobilecontrollermodule.BluetoothChatService.*;
+//import static com.mdpgrp10.androidmobilecontrollermodule.BluetoothChatService.*;
 
 //import static android.support.v4.media.routing.MediaRouterJellybean.UserRouteInfo.setStatus;
 
@@ -141,6 +141,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         Log.d(TAG, "setupChat()");
         mChatService = new BluetoothChatService(this, mHandler);
         spf = getSharedPreferences(PREF_DB, Context.MODE_PRIVATE);
+
+        this.maze = new Maze(this);
+        ((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
 
         ImageButtonUp = (ImageButton) findViewById(R.id.imageButtonUp);
         ImageButtonUp.setOnClickListener(new View.OnClickListener() {
@@ -298,8 +301,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                             final int scrollAmount = viewRx.getLayout().getLineTop(viewRx.getLineCount()) - viewRx.getHeight(); // if there is no need to scroll, scrollAmount will be <=0
                             if (scrollAmount > 0) viewRx.scrollTo(0, scrollAmount); else viewRx.scrollTo(0, 0);
                         }
-                    }
-                    break;*/
+                    }*/
+                    break;
                 case MESSAGE_DEVICE_NAME:
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     Toast.makeText(getApplicationContext(), "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
@@ -345,7 +348,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         SharedPreferences.Editor editor;
-
+        /*while (btAutoConnect == true){
+            connectDevice(data, true);
+            btAutoConnect = false;
+            return;
+        }*/
         if (D)
             Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {
@@ -389,8 +396,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.maze = new Maze(this);
-        ((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
+        //this.maze = new Maze(this);
+        //((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
         /*RelativeLayout surface = (RelativeLayout) findViewById(R.id.surface);
         surface.addView(this.maze);*/
 

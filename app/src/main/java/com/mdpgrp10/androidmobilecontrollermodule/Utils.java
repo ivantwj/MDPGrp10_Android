@@ -24,10 +24,10 @@ public class Utils {
     public static final String SET_EXPLORE_DEFAULT = "pexplore" + "\n";
     public static final String SET_SHORTEST_PATH_DEFAULT = "pshortestPath" + "\n";
     //public static final String SET_STOP_DEFAULT = "q,";
-    public static final String SET_UP_DEFAULT = "w";
-    public static final String SET_DOWN_DEFAULT = "s";
-    public static final String SET_LEFT_DEFAULT = "a";
-    public static final String SET_RIGHT_DEFAULT = "d";
+    public static final String SET_UP_DEFAULT = "hW1|";
+    public static final String SET_DOWN_DEFAULT = "hS1|";
+    public static final String SET_LEFT_DEFAULT = "hA1|";
+    public static final String SET_RIGHT_DEFAULT = "hD1|";
     public static final String SET_CMD1_DEFAULT = "custom command 1";
     public static final String SET_CMD2_DEFAULT = "custom command 2";
     /*public static final String SET_CMD3_DEFAULT = "custom command 3";
