@@ -91,6 +91,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     private SharedPreferences spf;
 
+    public int RobotX;
+    public int RobotY;
+    public String RobotH;
+
     private static int msgCounter = 0;
 
     Maze maze;
@@ -291,6 +295,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
+                    if(readMessage.length() == 1){
+                        updateMap(defaultMap, readMessage, true);
+                    }
                     if(D)
                         //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
                         RobotStatus.setText(readMessage);
@@ -332,8 +339,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             btStatus.setIcon(R.drawable.bt_off);*/
     }
 
-    public void updateMap(String mapInfo, boolean init){
-        maze.robotChange(mapInfo);
+    public void updateMap(String mapInfo, String action, boolean init){
+        if (action == "nothing"){
+            maze.robotChange(mapInfo);
+        }
+        else if (action == "w"){
+
+        }
+
         if(!init) {
             sendMessage("Robot_init(" + mapInfo.substring(5, 18)+")", true);
             /*initRobotMenu.setIcon(R.drawable.location_off);
@@ -342,8 +355,12 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         Log.d(TAG, "Map changed.");
     }
 
+
     public void SendStartPos(int x,int y,String head) {
         sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
+        RobotX = x;
+        RobotY = y;
+        RobotH = head;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

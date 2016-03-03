@@ -57,7 +57,6 @@ public class Utils {
         System.arraycopy(tmpRobot, 0, updatedInfo, 0, 2);
         updatedInfo[2] = checkHead(tmpRobot[0], tmpRobot[1], tmpRobot[2], tmpRobot[3]);
         updatedInfo[3] = mapInfo;
-
         return updatedInfo;
     }
 

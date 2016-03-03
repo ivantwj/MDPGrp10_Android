@@ -95,6 +95,10 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     public void robotChange(String newMap){
         if(newMap != null && newMap.length() > 4 && newMap.substring(0, 4).toUpperCase().equals("GRID"))
             robotActionQueue.add(newMap);
+        if(newMap != null && newMap.length() == 1){
+
+            robotActionQueue.add(newMap);
+        }
     }
 
     public void updateMap(float posX, float posY, String headPos, String mapInfo){
@@ -152,8 +156,12 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         RectF rect = new RectF();
         for(int i = 0; i < info.length; i++){
             if(Integer.valueOf(info[i]) == 1){
-                int currentRow = i / MAP_COLS;
-                int currentCol = i - MAP_COLS * currentRow;
+                /*int currentRow = i / MAP_COLS;
+                int currentCol = i - MAP_COLS * currentRow;*/
+
+
+                int currentCol = i / MAP_ROWS;
+                int currentRow = i - MAP_ROWS * currentCol;
 
                 float left = mapStartX + SCREEN_PADDING + currentCol * cellWidth;
                 float top = mapStartY + SCREEN_PADDING + currentRow * cellWidth;

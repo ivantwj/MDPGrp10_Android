@@ -24,6 +24,7 @@ public class RobotSettingActivity extends DialogFragment {
     private RadioGroup robotHead;
     private Button btnRobotSave;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,11 +96,12 @@ public class RobotSettingActivity extends DialogFragment {
                 break;
         }
 
-        String mapInfo = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
-        ((MainActivity)getActivity()).updateMap(mapInfo, false);
+        defaultMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
+        String action = "nothing";
+        ((MainActivity)getActivity()).updateMap(defaultMap, action, false);
         ((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
 
-        Toast.makeText(getActivity(), "Robot set: "+mapInfo, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Robot set: "+defaultMap, Toast.LENGTH_SHORT).show();
         getDialog().dismiss();
     }
 }

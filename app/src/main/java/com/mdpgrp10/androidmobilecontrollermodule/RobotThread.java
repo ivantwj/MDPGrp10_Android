@@ -40,7 +40,7 @@ public class RobotThread extends Thread {
             int n = maze.robotActionQueue.size();
             if(n <= 0) {
                 try{
-                    Thread.sleep(1000);
+                    Thread.sleep(2500);
                 }catch (InterruptedException ite){
                     ite.printStackTrace();
                 }
