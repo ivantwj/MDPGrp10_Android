@@ -37,23 +37,48 @@ public class RobotThread extends Thread {
 
     public void run(){
         while(running){
-            if(maze.robotActionQueue.size() <= 0)
+            int n = maze.robotActionQueue.size();
+            if(n <= 0) {
+                try{
+                    Thread.sleep(1000);
+                }catch (InterruptedException ite){
+                    ite.printStackTrace();
+                }
+                System.out.println("the size of the queue is " + n );
                 continue;
+            }
             Canvas c = null;
             try{
                 c = sh.lockCanvas(null);
                 synchronized (sh){
+                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
+                    Log.d(TAG, "updatedInfo[1]: " + currentY);
+                    Log.d(TAG, "updatedInfo[2]: " + headPos);
+                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
+                    n = maze.robotActionQueue.size();
+                    System.out.println("the size of the queue is " + n);
                     decodeAction(maze.robotActionQueue.poll());
+                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
+                    Log.d(TAG, "updatedInfo[1]: " + currentY);
+                    Log.d(TAG, "updatedInfo[2]: " + headPos);
+                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                     maze.updateMap(currentX, currentY, headPos, mapInfo);
+                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
+                    Log.d(TAG, "updatedInfo[1]: " + currentY);
+                    Log.d(TAG, "updatedInfo[2]: " + headPos);
+                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                 }
             }catch(Exception e){
+                e.printStackTrace();
                 Log.d(TAG, "drawing robot error: " + e.toString());
             }finally{
-                if(c != null)
+                if(c != null) {
                     sh.unlockCanvasAndPost(c);
+                }
             }
         }
     }
+
 
     private void decodeAction(String newMapInfo){
         String[] updatedInfo = processMapDescriptor(newMapInfo);
