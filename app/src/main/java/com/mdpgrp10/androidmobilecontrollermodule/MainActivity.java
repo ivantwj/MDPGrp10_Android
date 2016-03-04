@@ -31,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -93,11 +95,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     public int RobotX;
     public int RobotY;
-    public String RobotH;
+    public String RobotH = "up";
 
     public String Map = defaultMap;
 
     private static int msgCounter = 0;
+
+    Queue<String> ivanQueue = new LinkedList<String>();
+
 
     Maze maze;
 
@@ -298,8 +303,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
 
-                    if(readMessage.contains("w")){
-                        updateMap(Map, readMessage, true);
+                    if(readMessage.length() == 1 ){
+                        updateMap(ivanQueue.poll(), readMessage, true);
                     }
                     if(D)
                         //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
@@ -343,7 +348,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     }
 
     public String updateMap(String mapInfo, String action, boolean init){
-
+        System.out.println("map_in is:" +mapInfo);
         String updatedMap = mapInfo;
         String constantMap = mapInfo.substring(0,10);
         String Map = updatedMap.substring(19);
@@ -365,27 +370,60 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         int xHead = Integer.parseInt(RobotXHead);
         int yHead = Integer.parseInt(RobotYHead);
 
-        if (action == "nothing"){
+        if (action.contains("nothing")){
+            System.out.println("updated map is: " +updatedMap);
+            ivanQueue.add(updatedMap);
             maze.robotChange(updatedMap);
         }
 
-        else if (action.equals("w")){
-            System.out.println("roboth is:" + RobotH);
-            if (RobotH.equals("up")){
-                System.out.println("ENTERED UP CASE");
-                y = y - 1;
-                yHead = yHead - 1;
-                RobotY = String.valueOf(y);
-                RobotYHead = String.valueOf(yHead);
-                updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + " " + Map;
-                System.out.println("map is: " +updatedMap);
-                maze.robotChange(updatedMap);
-                //RobotY = ((RobotX.valueOf()) - 1).toString();
-                //RobotX = RobotX;
-                //RobotY = RobotY - 1;
-                //mapInfo[13] = "15";
-                //RobotH = "up";
+        else if(action.length() == 1){
+            if (action.equals("w")) {
+                //System.out.println("peek is:" + ivanQueue.peek());
+                if (RobotH.equals("up")) {
+                    y = y - 1;
+                    yHead = yHead - 1;
+                    //RobotY = ((RobotX.valueOf()) - 1).toString();
+                    //RobotX = RobotX;
+                    //RobotY = RobotY - 1;
+                    //mapInfo[13] = "15";
+                    //RobotH = "up";
+                } else if (RobotH.equals("down")) {
+                    y = y + 1;
+                    yHead = yHead + 1;
+                } else if (RobotH.equals("left")) {
+                    x = x - 1;
+                    xHead = xHead - 1;
+                } else if (RobotH.equals("right")) {
+                    x = x + 1;
+                    xHead = xHead + 1;
+                }
             }
+
+            if (action.equals("s")) {
+                //System.out.println("peek is:" + ivanQueue.peek());
+                if (RobotH.equals("up")) {
+                    y = y + 1;
+                    yHead = yHead + 1;
+                } else if (RobotH.equals("down")) {
+                    y = y - 1;
+                    yHead = yHead - 1;
+                } else if (RobotH.equals("left")) {
+                    x = x + 1;
+                    xHead = xHead + 1;
+                } else if (RobotH.equals("right")) {
+                    x = x - 1;
+                    xHead = xHead - 1;
+                }
+            }
+
+            RobotY = String.valueOf(y);
+            RobotYHead = String.valueOf(yHead);
+            RobotX = String.valueOf(x);
+            RobotXHead = String.valueOf(xHead);
+            updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + " " + Map;
+            System.out.println("map is: " +updatedMap);
+            ivanQueue.add(updatedMap);
+            maze.robotChange(updatedMap);
         }
         //mapInfo.substring(10, 18)
 

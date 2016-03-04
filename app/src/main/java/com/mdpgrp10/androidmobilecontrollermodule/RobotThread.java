@@ -8,6 +8,8 @@ package com.mdpgrp10.androidmobilecontrollermodule;
         import android.util.Log;
         import android.view.SurfaceHolder;
 
+        import java.util.Queue;
+
         import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
 
 public class RobotThread extends Thread {
@@ -24,6 +26,7 @@ public class RobotThread extends Thread {
     private float currentY;
     private String mapInfo;
     private String headPos;
+    //public Queue<String> ivanQueue;
 
     public RobotThread(SurfaceHolder surfaceHolder, Maze maze, float initialX, float initialY, float cellWidth){
         sh = surfaceHolder;
@@ -57,6 +60,7 @@ public class RobotThread extends Thread {
                     Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                     n = maze.robotActionQueue.size();
                     System.out.println("the size of the queue is " + n);
+
                     decodeAction(maze.robotActionQueue.poll());
                     /*Log.d(TAG, "updatedInfo[0]: " + currentX);
                     Log.d(TAG, "updatedInfo[1]: " + currentY);

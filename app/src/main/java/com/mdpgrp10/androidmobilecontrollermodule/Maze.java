@@ -39,6 +39,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     private static Bitmap robotLeft;
     private static Bitmap robotRight;
     public static Queue<String> robotActionQueue;
+    public static Queue<String> robotActionQueue1;
     private RobotThread robotThread;
 
 
@@ -96,7 +97,6 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         if(newMap != null && newMap.length() > 4 && newMap.substring(0, 4).toUpperCase().equals("GRID"))
             robotActionQueue.add(newMap);
         if(newMap != null && newMap.length() == 1){
-
             robotActionQueue.add(newMap);
         }
     }
