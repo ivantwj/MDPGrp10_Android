@@ -95,6 +95,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public int RobotY;
     public String RobotH;
 
+    public String Map = defaultMap;
+
     private static int msgCounter = 0;
 
     Maze maze;
@@ -295,8 +297,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
-                    if(readMessage.length() == 1){
-                        updateMap(defaultMap, readMessage, true);
+
+                    if(readMessage.contains("w")){
+                        updateMap(Map, readMessage, true);
                     }
                     if(D)
                         //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
@@ -339,29 +342,67 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             btStatus.setIcon(R.drawable.bt_off);*/
     }
 
-    public void updateMap(String mapInfo, String action, boolean init){
-        if (action == "nothing"){
-            maze.robotChange(mapInfo);
-        }
-        else if (action == "w"){
+    public String updateMap(String mapInfo, String action, boolean init){
 
+        String updatedMap = mapInfo;
+        String constantMap = mapInfo.substring(0,10);
+        String Map = updatedMap.substring(19);
+        String[] tmpRobot = new String[4];
+        int tmpIndex;
+        //remove spaces and put the 4 values of robot position into tmpRobot
+        for(int i = 0; i < 7; i++) {
+            tmpIndex = mapInfo.indexOf(" ");
+            if(i > 2)
+                tmpRobot[i-3] = mapInfo.substring(0, tmpIndex);
+            mapInfo = mapInfo.substring(tmpIndex+1);
         }
+        String RobotX = tmpRobot[0];
+        String RobotY = tmpRobot[1];
+        String RobotXHead = tmpRobot[2];
+        String RobotYHead = tmpRobot[3];
+        int x = Integer.parseInt(RobotX);
+        int y = Integer.parseInt(RobotY);
+        int xHead = Integer.parseInt(RobotXHead);
+        int yHead = Integer.parseInt(RobotYHead);
+
+        if (action == "nothing"){
+            maze.robotChange(updatedMap);
+        }
+
+        else if (action.equals("w")){
+            System.out.println("roboth is:" + RobotH);
+            if (RobotH.equals("up")){
+                System.out.println("ENTERED UP CASE");
+                y = y - 1;
+                yHead = yHead - 1;
+                RobotY = String.valueOf(y);
+                RobotYHead = String.valueOf(yHead);
+                updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + " " + Map;
+                System.out.println("map is: " +updatedMap);
+                maze.robotChange(updatedMap);
+                //RobotY = ((RobotX.valueOf()) - 1).toString();
+                //RobotX = RobotX;
+                //RobotY = RobotY - 1;
+                //mapInfo[13] = "15";
+                //RobotH = "up";
+            }
+        }
+        //mapInfo.substring(10, 18)
 
         if(!init) {
-            sendMessage("Robot_init(" + mapInfo.substring(5, 18)+")", true);
+            sendMessage("Robot_init(" + updatedMap.substring(5, 18)+")", true);
             /*initRobotMenu.setIcon(R.drawable.location_off);
             initRobotMenu.setEnabled(false);*/
         }
         Log.d(TAG, "Map changed.");
+        return updatedMap;
     }
 
 
     public void SendStartPos(int x,int y,String head) {
         sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
-        RobotX = x;
-        RobotY = y;
-        RobotH = head;
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         SharedPreferences.Editor editor;

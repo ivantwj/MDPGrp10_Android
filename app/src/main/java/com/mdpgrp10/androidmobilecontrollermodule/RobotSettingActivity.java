@@ -23,7 +23,7 @@ public class RobotSettingActivity extends DialogFragment {
     private EditText robotX, robotY;
     private RadioGroup robotHead;
     private Button btnRobotSave;
-
+    public String Map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +43,7 @@ public class RobotSettingActivity extends DialogFragment {
         super.onStart();
         getDialog().setTitle("Robot Initialization");
         btnRobotSave.setOnClickListener(initRobot);
+
     }
 
     private View.OnClickListener initRobot = new View.OnClickListener(){
@@ -50,8 +51,13 @@ public class RobotSettingActivity extends DialogFragment {
             String x = robotX.getText().toString();
             String y = robotY.getText().toString();
             checkPos(x, y);
+
         }
     };
+
+    public String returnMap(String Map){
+        return Map;
+    }
 
     private void checkPos(String x, String y){
         int posX = 1, posY = 1, headX, headY;
@@ -98,10 +104,11 @@ public class RobotSettingActivity extends DialogFragment {
 
         defaultMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
         String action = "nothing";
-        ((MainActivity)getActivity()).updateMap(defaultMap, action, false);
+        ((MainActivity)getActivity()).updateMap(defaultMap, "nothing", false);
         ((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
 
-        Toast.makeText(getActivity(), "Robot set: "+defaultMap, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Robot set: " + defaultMap, Toast.LENGTH_SHORT).show();
         getDialog().dismiss();
+
     }
 }
