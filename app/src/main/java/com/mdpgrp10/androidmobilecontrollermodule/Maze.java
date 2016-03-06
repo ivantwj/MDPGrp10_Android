@@ -42,8 +42,6 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     public static Queue<String> robotActionQueue1;
     private RobotThread robotThread;
 
-
-
     public Maze(Context context){
         super(context);
         Log.d(TAG, "1");

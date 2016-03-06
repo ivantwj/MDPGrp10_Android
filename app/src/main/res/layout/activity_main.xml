@@ -26,11 +26,12 @@
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Switch"
+            android:text="Auto Update Map"
             android:id="@+id/switch1"
-            android:layout_alignBottom="@+id/toggleButtonTilt"
-            android:layout_toRightOf="@+id/buttonF2"
-            android:layout_toEndOf="@+id/buttonF2" />
+            android:checked="false"
+            android:layout_above="@+id/relativeLayout"
+            android:layout_alignLeft="@+id/buttonUpdate"
+            android:layout_alignStart="@+id/buttonUpdate" />
 
         <ToggleButton
             android:layout_width="wrap_content"
@@ -40,7 +41,7 @@
             android:textOn="Tilt Control On"
             android:id="@+id/toggleButtonTilt"
             android:checked="false"
-            android:layout_below="@+id/robotStatus"
+            android:layout_below="@+id/textViewMap"
             android:layout_alignRight="@+id/relativeLayout"
             android:layout_alignEnd="@+id/relativeLayout" />
 
@@ -115,6 +116,25 @@
             android:id="@+id/textViewRobotStatus"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#ffffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Map:"
+            android:id="@+id/textViewMap"
+            android:layout_below="@+id/robotStatus"
+            android:textColor="#ffffffff" />
+
+        <EditText
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:layout_below="@+id/textViewMap"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <Button
@@ -143,6 +163,15 @@
             android:layout_below="@+id/relativeLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Map"
+            android:id="@+id/buttonUpdate"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/buttonF2"
+            android:layout_toEndOf="@+id/buttonF2" />
     </RelativeLayout>
 
 </RelativeLayout>

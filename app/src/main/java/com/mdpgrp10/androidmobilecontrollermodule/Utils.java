@@ -60,7 +60,7 @@ public class Utils {
         return updatedInfo;
     }
 
-    private static String checkHead(String posX0, String posY0, String posX1, String posY1){
+    public static String checkHead(String posX0, String posY0, String posX1, String posY1){
         if(posX0.equals(posX1)){
             if(Integer.valueOf(posY0) < Integer.valueOf(posY1))
                 return  HEAD_POS_DOWN;

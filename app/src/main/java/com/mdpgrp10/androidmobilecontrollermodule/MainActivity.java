@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -69,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private String F1;
     private String F2;
     private EditText RobotStatus;
+    private EditText MapGrid;
 
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -82,6 +84,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private Button ButtonF2;
     private Button ButtonExplore;
     private Button ButtonShortestPath;
+    private Switch SwitchMap;
+    public boolean autoUpdateMap = false;
+    private Button ButtonUpdate;
+    public boolean updateMap = false;
 
     private SensorManager mSensorManager = null;
     private Sensor mSensor = null;
@@ -93,9 +99,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     private SharedPreferences spf;
 
-    public int RobotX;
+    /*public int RobotX;
     public int RobotY;
-    public String RobotH = "up";
+    public String RobotH = "up";*/
 
     public String Map = defaultMap;
 
@@ -303,12 +309,20 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
 
-                    if(readMessage.length() == 1 ){
+                    if(readMessage.length() == 1){
                         updateMap(ivanQueue.poll(), readMessage, true);
+                        RobotStatus.setText("moving...");
                     }
-                    if(D)
+                    /*else
+                        RobotStatus.setText("stopped",100);*/
+
+                    if (readMessage.contains(" ")){
+                        updateMap(readMessage, "nothing", true);
+                        MapGrid.setText(readMessage);
+                    }
+                    //if(D)
                         //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
-                        RobotStatus.setText(readMessage);
+                        //RobotStatus.setText(readMessage);
 
                     /*if(readMessage.length() >= 4) {
                         if ((readMessage.substring(0, 3)).equals("[V]")) {
@@ -347,39 +361,102 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             btStatus.setIcon(R.drawable.bt_off);*/
     }
 
-    public String updateMap(String mapInfo, String action, boolean init){
-        System.out.println("map_in is:" +mapInfo);
+    public void updateMap(String mapInfo, String action, boolean init) {
+        System.out.println("map_in is:" + mapInfo);
+        String Map;
         String updatedMap = mapInfo;
-        String constantMap = mapInfo.substring(0,10);
-        String Map = updatedMap.substring(19);
+        String constantMap = mapInfo.substring(0, 10);
         String[] tmpRobot = new String[4];
         int tmpIndex;
+        int spaceCounter = 0;
         //remove spaces and put the 4 values of robot position into tmpRobot
-        for(int i = 0; i < 7; i++) {
+        while (spaceCounter <= 6) {
             tmpIndex = mapInfo.indexOf(" ");
-            if(i > 2)
-                tmpRobot[i-3] = mapInfo.substring(0, tmpIndex);
-            mapInfo = mapInfo.substring(tmpIndex+1);
+            spaceCounter++;
+            if (spaceCounter > 3) {
+                tmpRobot[spaceCounter - 4] = mapInfo.substring(0, tmpIndex);
+            }
+            mapInfo = mapInfo.substring(tmpIndex + 1);
         }
-        String RobotX = tmpRobot[0];
-        String RobotY = tmpRobot[1];
-        String RobotXHead = tmpRobot[2];
-        String RobotYHead = tmpRobot[3];
-        int x = Integer.parseInt(RobotX);
-        int y = Integer.parseInt(RobotY);
-        int xHead = Integer.parseInt(RobotXHead);
-        int yHead = Integer.parseInt(RobotYHead);
+        String RobotInfo = tmpRobot[0] + " " + tmpRobot[1] + " " + tmpRobot[2] + " " + tmpRobot[3];
+        String RobotHead;
+        int x = Integer.parseInt(tmpRobot[0]);
+        int y = Integer.parseInt(tmpRobot[1]);
+        int xHead = Integer.parseInt(tmpRobot[2]);
+        int yHead = Integer.parseInt(tmpRobot[3]);
 
-        if (action.contains("nothing")){
-            System.out.println("updated map is: " +updatedMap);
+        if (RobotInfo.length() == 7)
+            Map = updatedMap.substring(20);
+        else if (RobotInfo.length() == 8)
+            Map = updatedMap.substring(21);
+        else if (RobotInfo.length() == 9)
+            Map = updatedMap.substring(22);
+        else if (RobotInfo.length() == 10)
+            Map = updatedMap.substring(23);
+        else
+            Map = updatedMap.substring(19);
+
+        if (action.contains("nothing")) {
+            System.out.println("updated map is: " + updatedMap);
             ivanQueue.add(updatedMap);
             maze.robotChange(updatedMap);
-        }
+        } else if (action.length() == 1) {
+            RobotHead = getRobotHead(x, y, xHead, yHead);
+            if (action.equals("w")){
+                if (RobotHead.equals("up")) {
+                    y = y - 1;
+                    yHead = yHead - 1;
+                }
+                else if (RobotHead.equals("down")) {
+                    y = y + 1;
+                    yHead = yHead + 1;
+                } else if (RobotHead.equals("left")) {
+                    x = x - 1;
+                    xHead = xHead - 1;
+                } else if (RobotHead.equals("right")) {
+                    x = x + 1;
+                    xHead = xHead + 1;
+                }
+            }
+            if (action.equals("a")){
+                if (RobotHead.equals("up")) {
+                    xHead = xHead - 1;
+                    yHead = yHead + 1;
+                }
+                else if (RobotHead.equals("down")) {
+                    xHead = xHead + 1;
+                    yHead = yHead - 1;
+                }
+                else if (RobotHead.equals("left")) {
+                    xHead = xHead + 1;
+                    yHead = yHead + 1;
+                }
+                else if (RobotHead.equals("right")) {
+                    xHead = xHead - 1;
+                    yHead = yHead - 1;
+                }
+            }
 
-        else if(action.length() == 1){
-            if (action.equals("w")) {
+            if (action.equals("d")){
+                if (RobotHead.equals("up")) {
+                    xHead = xHead + 1;
+                    yHead = yHead + 1;
+                }
+                else if (RobotHead.equals("down")) {
+                    xHead = xHead - 1;
+                    yHead = yHead - 1;
+                }
+                else if (RobotHead.equals("left")) {
+                    xHead = xHead + 1;
+                    yHead = yHead - 1;
+                }
+                else if (RobotHead.equals("right")) {
+                    xHead = xHead - 1;
+                    yHead = yHead + 1;
+                }
+            }
                 //System.out.println("peek is:" + ivanQueue.peek());
-                if (RobotH.equals("up")) {
+                /*if (RobotH.equals("up")) {
                     y = y - 1;
                     yHead = yHead - 1;
                     //RobotY = ((RobotX.valueOf()) - 1).toString();
@@ -397,9 +474,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     x = x + 1;
                     xHead = xHead + 1;
                 }
-            }
+            }*/
 
-            if (action.equals("s")) {
+            /*if (action.equals("s")) {
                 //System.out.println("peek is:" + ivanQueue.peek());
                 if (RobotH.equals("up")) {
                     y = y + 1;
@@ -414,28 +491,46 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     x = x - 1;
                     xHead = xHead - 1;
                 }
+            }*/
+
+                String RobotY = String.valueOf(y);
+                String RobotYHead = String.valueOf(yHead);
+                String RobotX = String.valueOf(x);
+                String RobotXHead = String.valueOf(xHead);
+                updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + Map;
+                System.out.println("map is: " + updatedMap);
+                sendMessage(updatedMap, true);
+                ivanQueue.add(updatedMap);
+                if (autoUpdateMap) {
+                    maze.robotChange(updatedMap);
+                }
             }
+            //mapInfo.substring(10, 18)
 
-            RobotY = String.valueOf(y);
-            RobotYHead = String.valueOf(yHead);
-            RobotX = String.valueOf(x);
-            RobotXHead = String.valueOf(xHead);
-            updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + " " + Map;
-            System.out.println("map is: " +updatedMap);
-            ivanQueue.add(updatedMap);
-            maze.robotChange(updatedMap);
-        }
-        //mapInfo.substring(10, 18)
-
-        if(!init) {
-            sendMessage("Robot_init(" + updatedMap.substring(5, 18)+")", true);
+            if (!init) {
+                sendMessage("Robot_init(" + updatedMap.substring(5, 18) + ")", true);
             /*initRobotMenu.setIcon(R.drawable.location_off);
             initRobotMenu.setEnabled(false);*/
+            }
+            Log.d(TAG, "Map changed.");
+            //return updatedMap;
         }
-        Log.d(TAG, "Map changed.");
-        return updatedMap;
-    }
 
+
+    public String getRobotHead(int x, int y, int xHead, int yHead){
+        if(x == xHead){
+            if(y < yHead)
+                return ("down");
+            else
+                return ("up");
+        }else if(y == yHead) {
+            if (x < xHead)
+                return ("right");
+            else
+                return ("left");
+        }else
+            return "N";
+    }
 
     public void SendStartPos(int x,int y,String head) {
         sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
@@ -498,6 +593,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         surface.addView(this.maze);*/
 
         RobotStatus = (EditText)findViewById(R.id.robotStatus);
+        MapGrid = (EditText)findViewById(R.id.map);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -509,11 +605,38 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
 
+        SwitchMap = (Switch) findViewById(R.id.switch1);
 
+        //set the switch to ON
+        SwitchMap.setChecked(false);
+        //attach a listener to check for changes in state
+        SwitchMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if(isChecked){
+                    //auto update map
+                    autoUpdateMap = true;
+                }else{
+                    autoUpdateMap = false;
+                }
+
+            }
+        });
+
+        ButtonUpdate = (Button) findViewById(R.id.buttonUpdate);
+        ButtonUpdate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // update the map
+                maze.robotChange(ivanQueue.peek());
+            }
+        });
+    }
         //setContentView(new Maze(this));
 
-    }
+
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {

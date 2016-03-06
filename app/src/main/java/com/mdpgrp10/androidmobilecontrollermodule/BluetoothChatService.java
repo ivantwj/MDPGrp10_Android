@@ -42,6 +42,7 @@ public class BluetoothChatService {
     public static final UUID MY_UUID_INSECURE =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
+    //public boolean btAutoConnect = false;
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -246,6 +247,7 @@ public class BluetoothChatService {
 
         // Start the service over to restart listening mode
         BluetoothChatService.this.start();
+        //btAutoConnect = true;
     }
 
     /**

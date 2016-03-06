@@ -15,10 +15,10 @@ package com.mdpgrp10.androidmobilecontrollermodule;
 public class RobotThread extends Thread {
 
     private static final String TAG = "RobotThread";
+    private final Maze maze;
     private boolean running = false;
 
     private SurfaceHolder sh;
-    private Maze maze;
     private float initialX;
     private float initialY;
     private float cellWidth;

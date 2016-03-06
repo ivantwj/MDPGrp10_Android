@@ -23,7 +23,9 @@ public class RobotSettingActivity extends DialogFragment {
     private EditText robotX, robotY;
     private RadioGroup robotHead;
     private Button btnRobotSave;
+    public String newMap;
     public String Map;
+    public int map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,12 +54,9 @@ public class RobotSettingActivity extends DialogFragment {
             String y = robotY.getText().toString();
             checkPos(x, y);
 
+
         }
     };
-
-    public String returnMap(String Map){
-        return Map;
-    }
 
     private void checkPos(String x, String y){
         int posX = 1, posY = 1, headX, headY;
@@ -102,13 +101,11 @@ public class RobotSettingActivity extends DialogFragment {
                 break;
         }
 
-        defaultMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
-        String action = "nothing";
-        ((MainActivity)getActivity()).updateMap(defaultMap, "nothing", false);
+        String firstMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
+        ((MainActivity)getActivity()).updateMap(firstMap, "nothing", false);
         ((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
 
-        Toast.makeText(getActivity(), "Robot set: " + defaultMap, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Robot set: " + firstMap, Toast.LENGTH_SHORT).show();
         getDialog().dismiss();
-
     }
 }
