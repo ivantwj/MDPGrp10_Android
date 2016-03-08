@@ -31,17 +31,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 import static com.mdpgrp10.androidmobilecontrollermodule.Utils.*;
-//import static com.mdpgrp10.androidmobilecontrollermodule.BluetoothChatService.*;
-
-//import static android.support.v4.media.routing.MediaRouterJellybean.UserRouteInfo.setStatus;
-
+import static com.mdpgrp10.androidmobilecontrollermodule.Maze.*;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener{
 
@@ -58,64 +54,64 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
-    private static final String PREFS_NAME = "bt_remote_keyconfig";
+    //private static final String PREFS_NAME = "bt_remote_keyconfig";
 
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-    private static final int REQUEST_SAVE_BUTTON = 10;
-    private static final int REQUEST_COORD_BUTTON = 100;
+    /*private static final int REQUEST_SAVE_BUTTON = 10;
+    private static final int REQUEST_COORD_BUTTON = 100;*/
 
-    private String F1;
-    private String F2;
-    private EditText RobotStatus;
+    //Maze variables
+    Maze maze;
+    private TextView RobotStatus;
     private EditText MapGrid;
+    private Switch SwitchAutoUpdateMap;
+    public boolean autoUpdateMap = false;
+    private Button ButtonUpdateMap;
+    Queue<String> MapQueue = new LinkedList<String>();
 
+    //Bluetooth variables
     private String mConnectedDeviceName = null;
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothChatService mChatService = null;
 
-    private ImageButton ImageButtonUp;
-    private ImageButton ImageButtonDown;
-    private ImageButton ImageButtonLeft;
-    private ImageButton ImageButtonRight;
+    //Robot control variables
+    private ImageButton ImageButtonForward;
+    private ImageButton ImageButtonAnticlockwise;
+    private ImageButton ImageButtonClockwise;
     private Button ButtonF1;
     private Button ButtonF2;
     private Button ButtonExplore;
     private Button ButtonShortestPath;
-    private Switch SwitchMap;
-    public boolean autoUpdateMap = false;
-    private Button ButtonUpdate;
-    public boolean updateMap = false;
 
+    //Tilt control variables
     private SensorManager mSensorManager = null;
     private Sensor mSensor = null;
     float [] history = new float[2];
-    boolean toggleSet;
-    private ToggleButton toggle;
-
-    private boolean btAutoConnect = false;
+    private ToggleButton ToggleTilt;
+    boolean ToggleisSet;
 
     private SharedPreferences spf;
 
-    /*public int RobotX;
-    public int RobotY;
-    public String RobotH = "up";*/
 
-    public String Map = defaultMap;
+    /*------------------------------------Default Methods------------------------------------*/
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    private static int msgCounter = 0;
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
-    Queue<String> ivanQueue = new LinkedList<String>();
-
-
-    Maze maze;
-
-    // Whether the Log Fragment is currently shown
-    //private boolean mLogShown;
-
-    //private Map canvas;
+        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     @Override
     public void onStart() {
@@ -130,17 +126,21 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             if (mChatService == null)
                 setupChat();
         }
-
-        /*autoModeThread = new AutoThread();
-        autoModeThread.start();
-        /*mapPanel = (LinearLayout) findViewById(R.id.mapPanel);
-        mapSurface = new MapSurface(MainActivity.this);
-        mapPanel.addView(mapSurface);*/
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mChatService != null)
+            mChatService.stop();
+        MapQueue.clear();
+    }
+
+    /*@Override
     public synchronized void onResume() {
         super.onResume();
+        ivanQueue.clear();
+        jenQueue.clear();
         if (D)
             Log.e(TAG, "+ ON RESUME +");
         if (mChatService != null) {
@@ -152,40 +152,38 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         //mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         //if(sensorRegistered)
             //sensorMgr.registerListener(MainActivity.this, sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-    }
+    }*/
 
+    /*------------------------------------setupChat------------------------------------*/
     private void setupChat() {
         Log.d(TAG, "setupChat()");
         mChatService = new BluetoothChatService(this, mHandler);
         spf = getSharedPreferences(PREF_DB, Context.MODE_PRIVATE);
 
         this.maze = new Maze(this);
-        ((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
+        ((RelativeLayout) findViewById(R.id.MazeLayout)).addView(this.maze);
 
-        ImageButtonUp = (ImageButton) findViewById(R.id.imageButtonUp);
-        ImageButtonUp.setOnClickListener(new View.OnClickListener() {
+        RobotStatus = (TextView)findViewById(R.id.textViewRobotStatus);
+        MapGrid = (EditText)findViewById(R.id.editTextMap);
+
+        ImageButtonForward = (ImageButton) findViewById(R.id.imageButtonForward);
+        ImageButtonForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(spf.getString(SET_UP, SET_UP_DEFAULT), true);
             }
         });
 
-        ImageButtonDown = (ImageButton) findViewById(R.id.imageButtonDown);
-        ImageButtonDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage(spf.getString(SET_DOWN, SET_DOWN_DEFAULT), true);
-            }
-        });
-        ImageButtonLeft = (ImageButton) findViewById(R.id.imageButtonLeft);
-        ImageButtonLeft.setOnClickListener(new View.OnClickListener() {
+        ImageButtonAnticlockwise = (ImageButton) findViewById(R.id.imageButtonAnticlockwise);
+        ImageButtonAnticlockwise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(spf.getString(SET_LEFT, SET_LEFT_DEFAULT), true);
             }
         });
-        ImageButtonRight = (ImageButton) findViewById(R.id.imageButtonRight);
-        ImageButtonRight.setOnClickListener(new View.OnClickListener() {
+
+        ImageButtonClockwise = (ImageButton) findViewById(R.id.imageButtonClockwise);
+        ImageButtonClockwise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
@@ -224,29 +222,44 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             }
         });
 
-        toggle = (ToggleButton) findViewById(R.id.toggleButtonTilt);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ToggleTilt = (ToggleButton) findViewById(R.id.toggleButtonTilt);
+        ToggleTilt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled
-                    toggleSet = true;
+                    ToggleisSet = true;
 
                 } else {
                     // The toggle is disabled
-                    toggleSet = false;
+                    ToggleisSet = false;
                 }
             }
         });
 
+        SwitchAutoUpdateMap = (Switch) findViewById(R.id.switchAutoUpdateMap);
+        SwitchAutoUpdateMap.setChecked(false);
+        SwitchAutoUpdateMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    autoUpdateMap = true;
+                }
+                else{
+                    autoUpdateMap = false;
+                }
+            }
+        });
+
+        ButtonUpdateMap = (Button) findViewById(R.id.buttonUpdate);
+        ButtonUpdateMap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // update the map
+                maze.robotChange(MapQueue.peek());
+            }
+        });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mChatService != null)
-            mChatService.stop();
-    }
-
+    /*------------------------------------Bluetooth related Methods------------------------------------*/
     private void ensureDiscoverable() {
         if (D) Log.d(TAG, "ensure discoverable");
         if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
@@ -309,28 +322,28 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
 
-                    if(readMessage.length() == 1){
-                        updateMap(ivanQueue.poll(), readMessage, true);
-                        RobotStatus.setText("moving...");
+                    if(readMessage.contains("h")){
+                        updateMap(MapQueue.poll(), readMessage, true);
+                        RobotStatus.setText(" Moving...");
                     }
-                    /*else
-                        RobotStatus.setText("stopped",100);*/
+
+                    if (readMessage.contains("GRID")){
+                        updateMap(readMessage, "simulate", true);
+                    }
 
                     if (readMessage.contains(" ")){
-                        updateMap(readMessage, "nothing", true);
+                        updateMap(readMessage, "from algo", true);
                         MapGrid.setText(readMessage);
+                        RobotStatus.setText(" Stopped");
                     }
-                    //if(D)
-                        //Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
-                        //RobotStatus.setText(readMessage);
 
-                    /*if(readMessage.length() >= 4) {
-                        if ((readMessage.substring(0, 3)).equals("[V]")) {
-                            viewRx.append(readMessage.substring(3) + "\n");
-                            final int scrollAmount = viewRx.getLayout().getLineTop(viewRx.getLineCount()) - viewRx.getHeight(); // if there is no need to scroll, scrollAmount will be <=0
-                            if (scrollAmount > 0) viewRx.scrollTo(0, scrollAmount); else viewRx.scrollTo(0, 0);
-                        }
+                    /*if (readMessage.contains(";")){
+                        MapGrid.setText(readMessage);
                     }*/
+
+                    if(D)
+                        Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
+                        //RobotStatus.setText(readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
@@ -346,29 +359,61 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private final void setStatus(int resId, boolean status) {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle(resId);
-        /*if(btStatus != null && status)
-            btStatus.setIcon(R.drawable.bt_on);
-        else if(btStatus != null)
-            btStatus.setIcon(R.drawable.bt_off);*/
     }
 
     private final void setStatus(CharSequence subTitle, boolean status) {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle(subTitle);
-        /*if(btStatus != null && status)
-            btStatus.setIcon(R.drawable.bt_on);
-        else if(btStatus != null)
-            btStatus.setIcon(R.drawable.bt_off);*/
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        SharedPreferences.Editor editor;
+
+        if (D)
+            Log.d(TAG, "onActivityResult " + resultCode);
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE_SECURE:
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data, true);
+                }
+                break;
+            case REQUEST_CONNECT_DEVICE_INSECURE:
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data, false);
+                }
+                break;
+            case REQUEST_ENABLE_BT:
+                if (resultCode == Activity.RESULT_OK) {
+                    setupChat();
+                } else {
+                    Log.d(TAG, "BT not enabled");
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            /*case REQUEST_SAVE_BUTTON //10
+                break;
+            case REQUEST_COORD_BUTTON //100:
+                break;*/
+            default:
+                //onActivityResult_VoiceRecognition(requestCode, requestCode, data);
+        }
+    }
+
+    private void connectDevice(Intent data, boolean secure) {
+        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        mChatService.connect(device, secure);
+    }
+
+    /*------------------------------------Map Methods------------------------------------*/
     public void updateMap(String mapInfo, String action, boolean init) {
-        System.out.println("map_in is:" + mapInfo);
         String Map;
         String updatedMap = mapInfo;
         String constantMap = mapInfo.substring(0, 10);
         String[] tmpRobot = new String[4];
         int tmpIndex;
         int spaceCounter = 0;
+
         //remove spaces and put the 4 values of robot position into tmpRobot
         while (spaceCounter <= 6) {
             tmpIndex = mapInfo.indexOf(" ");
@@ -378,6 +423,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             }
             mapInfo = mapInfo.substring(tmpIndex + 1);
         }
+
         String RobotInfo = tmpRobot[0] + " " + tmpRobot[1] + " " + tmpRobot[2] + " " + tmpRobot[3];
         String RobotHead;
         int x = Integer.parseInt(tmpRobot[0]);
@@ -397,17 +443,30 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             Map = updatedMap.substring(19);
 
         if (action.contains("nothing")) {
-            System.out.println("updated map is: " + updatedMap);
-            ivanQueue.add(updatedMap);
+            MapQueue.add(updatedMap);
             maze.robotChange(updatedMap);
-        } else if (action.length() == 1) {
+        }
+
+        else if (action.contains("simulate")) {
+            MapQueue.add(updatedMap);
+            if (autoUpdateMap)
+                maze.robotChange(updatedMap);
+        }
+
+        else if (action.contains("from algo")){
+            //MapQueue.add("GRID 15 20 1 1 1 0 "+ updatedMap);
+            if (autoUpdateMap)
+                maze.robotChange("GRID 15 20 1 1 1 0 " + updatedMap);
+
+        }
+
+        else if (action.contains("h")) {
             RobotHead = getRobotHead(x, y, xHead, yHead);
-            if (action.equals("w")){
+            if (action.equals("hW1|")) {
                 if (RobotHead.equals("up")) {
                     y = y - 1;
                     yHead = yHead - 1;
-                }
-                else if (RobotHead.equals("down")) {
+                } else if (RobotHead.equals("down")) {
                     y = y + 1;
                     yHead = yHead + 1;
                 } else if (RobotHead.equals("left")) {
@@ -418,104 +477,58 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     xHead = xHead + 1;
                 }
             }
-            if (action.equals("a")){
+            if (action.equals("hA90|")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead - 1;
                     yHead = yHead + 1;
-                }
-                else if (RobotHead.equals("down")) {
+                } else if (RobotHead.equals("down")) {
                     xHead = xHead + 1;
                     yHead = yHead - 1;
-                }
-                else if (RobotHead.equals("left")) {
+                } else if (RobotHead.equals("left")) {
                     xHead = xHead + 1;
                     yHead = yHead + 1;
-                }
-                else if (RobotHead.equals("right")) {
+                } else if (RobotHead.equals("right")) {
                     xHead = xHead - 1;
                     yHead = yHead - 1;
                 }
             }
 
-            if (action.equals("d")){
+            if (action.equals("hD90|")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead + 1;
                     yHead = yHead + 1;
-                }
-                else if (RobotHead.equals("down")) {
+                } else if (RobotHead.equals("down")) {
                     xHead = xHead - 1;
                     yHead = yHead - 1;
-                }
-                else if (RobotHead.equals("left")) {
+                } else if (RobotHead.equals("left")) {
                     xHead = xHead + 1;
                     yHead = yHead - 1;
-                }
-                else if (RobotHead.equals("right")) {
+                } else if (RobotHead.equals("right")) {
                     xHead = xHead - 1;
                     yHead = yHead + 1;
                 }
             }
-                //System.out.println("peek is:" + ivanQueue.peek());
-                /*if (RobotH.equals("up")) {
-                    y = y - 1;
-                    yHead = yHead - 1;
-                    //RobotY = ((RobotX.valueOf()) - 1).toString();
-                    //RobotX = RobotX;
-                    //RobotY = RobotY - 1;
-                    //mapInfo[13] = "15";
-                    //RobotH = "up";
-                } else if (RobotH.equals("down")) {
-                    y = y + 1;
-                    yHead = yHead + 1;
-                } else if (RobotH.equals("left")) {
-                    x = x - 1;
-                    xHead = xHead - 1;
-                } else if (RobotH.equals("right")) {
-                    x = x + 1;
-                    xHead = xHead + 1;
-                }
-            }*/
 
-            /*if (action.equals("s")) {
-                //System.out.println("peek is:" + ivanQueue.peek());
-                if (RobotH.equals("up")) {
-                    y = y + 1;
-                    yHead = yHead + 1;
-                } else if (RobotH.equals("down")) {
-                    y = y - 1;
-                    yHead = yHead - 1;
-                } else if (RobotH.equals("left")) {
-                    x = x + 1;
-                    xHead = xHead + 1;
-                } else if (RobotH.equals("right")) {
-                    x = x - 1;
-                    xHead = xHead - 1;
-                }
-            }*/
-
-                String RobotY = String.valueOf(y);
-                String RobotYHead = String.valueOf(yHead);
-                String RobotX = String.valueOf(x);
-                String RobotXHead = String.valueOf(xHead);
-                updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + Map;
-                System.out.println("map is: " + updatedMap);
-                sendMessage(updatedMap, true);
-                ivanQueue.add(updatedMap);
-                if (autoUpdateMap) {
-                    maze.robotChange(updatedMap);
-                }
+            String RobotY = String.valueOf(y);
+            String RobotYHead = String.valueOf(yHead);
+            String RobotX = String.valueOf(x);
+            String RobotXHead = String.valueOf(xHead);
+            updatedMap = constantMap + " " + RobotX + " " + RobotY + " " + RobotXHead + " " + RobotYHead + Map;
+            System.out.println("map is: " + updatedMap);
+            MapQueue.add(updatedMap);
+            if (autoUpdateMap) {
+                sendMessage("auto update map:" + updatedMap, true);
+                maze.robotChange(updatedMap);
             }
-            //mapInfo.substring(10, 18)
-
-            if (!init) {
-                sendMessage("Robot_init(" + updatedMap.substring(5, 18) + ")", true);
-            /*initRobotMenu.setIcon(R.drawable.location_off);
-            initRobotMenu.setEnabled(false);*/
-            }
-            Log.d(TAG, "Map changed.");
-            //return updatedMap;
         }
 
+        if (!init) {
+            sendMessage("Robot_init(" + updatedMap.substring(5, 18) + ")", true);
+
+        }
+        Log.d(TAG, "Map changed.");
+        //return updatedMap;
+    }
 
     public String getRobotHead(int x, int y, int xHead, int yHead){
         if(x == xHead){
@@ -536,108 +549,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
     }
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        SharedPreferences.Editor editor;
-        /*while (btAutoConnect == true){
-            connectDevice(data, true);
-            btAutoConnect = false;
-            return;
-        }*/
-        if (D)
-            Log.d(TAG, "onActivityResult " + resultCode);
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE_SECURE:
-                if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, true);
-                    btAutoConnect = true;
-                }
-                break;
-            case REQUEST_CONNECT_DEVICE_INSECURE:
-                if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, false);
-                }
-                break;
-            case REQUEST_ENABLE_BT:
-                if (resultCode == Activity.RESULT_OK) {
-                    setupChat();
-                } else {
-                    Log.d(TAG, "BT not enabled");
-                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            case REQUEST_SAVE_BUTTON /*10*/:
-                break;
-            case REQUEST_COORD_BUTTON /*100*/:
-                break;
-            default:
-                //onActivityResult_VoiceRecognition(requestCode, requestCode, data);
-
-        }
-
-    }
-
-    private void connectDevice(Intent data, boolean secure) {
-        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        mChatService.connect(device, secure);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //this.maze = new Maze(this);
-        //((RelativeLayout) findViewById(R.id.surface)).addView(this.maze);
-        /*RelativeLayout surface = (RelativeLayout) findViewById(R.id.surface);
-        surface.addView(this.maze);*/
-
-        RobotStatus = (EditText)findViewById(R.id.robotStatus);
-        MapGrid = (EditText)findViewById(R.id.map);
-
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
-        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
-
-        SwitchMap = (Switch) findViewById(R.id.switch1);
-
-        //set the switch to ON
-        SwitchMap.setChecked(false);
-        //attach a listener to check for changes in state
-        SwitchMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                if(isChecked){
-                    //auto update map
-                    autoUpdateMap = true;
-                }else{
-                    autoUpdateMap = false;
-                }
-
-            }
-        });
-
-        ButtonUpdate = (Button) findViewById(R.id.buttonUpdate);
-        ButtonUpdate.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // update the map
-                maze.robotChange(ivanQueue.peek());
-            }
-        });
-    }
-        //setContentView(new Maze(this));
-
-
-
-
+/*------------------------------------Tilt Control Methods------------------------------------*/
     @Override
     public void onSensorChanged(SensorEvent event) {
         float xChange = history[0] - event.values[0];
@@ -646,24 +558,19 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         history[0] = event.values[0];
         history[1] = event.values[1];
 
-            if (xChange > 2 && toggleSet){
+            if (xChange > 2 && ToggleisSet){
                 //right
                 sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
             }
 
-            else if (xChange < -2 && toggleSet){
-                //right
+            else if (xChange < -2 && ToggleisSet){
+                //left
                 sendMessage(spf.getString(SET_LEFT, SET_LEFT_DEFAULT), true);
             }
 
-            if (yChange > 2 && toggleSet){
+            if (yChange > 2 && ToggleisSet){
                 //up
                 sendMessage(spf.getString(SET_UP, SET_UP_DEFAULT), true);
-            }
-
-            else if (yChange < -2 && toggleSet){
-                //down
-                sendMessage(spf.getString(SET_DOWN, SET_DOWN_DEFAULT), true);
             }
     }
 
@@ -671,6 +578,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    /*------------------------------------Menu Bar Methods------------------------------------*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -705,7 +614,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 setFunct.show(getSupportFragmentManager(), "setFunct");
                 return true;
 
-
             case R.id.action_discoverable:
                 ensureDiscoverable();
                 return true;
@@ -719,8 +627,5 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         }
 
     }
-
-
-
 }
 

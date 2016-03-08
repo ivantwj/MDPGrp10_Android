@@ -23,9 +23,6 @@ public class RobotSettingActivity extends DialogFragment {
     private EditText robotX, robotY;
     private RadioGroup robotHead;
     private Button btnRobotSave;
-    public String newMap;
-    public String Map;
-    public int map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,8 +50,6 @@ public class RobotSettingActivity extends DialogFragment {
             String x = robotX.getText().toString();
             String y = robotY.getText().toString();
             checkPos(x, y);
-
-
         }
     };
 

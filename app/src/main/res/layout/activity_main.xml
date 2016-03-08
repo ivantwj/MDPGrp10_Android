@@ -9,12 +9,11 @@
     android:id="@+id/main">
 
     <RelativeLayout
-        android:id="@+id/surface"
+        android:id="@+id/MazeLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -23,15 +22,46 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <Switch
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Auto Update Map"
-            android:id="@+id/switch1"
-            android:checked="false"
-            android:layout_above="@+id/relativeLayout"
-            android:layout_alignLeft="@+id/buttonUpdate"
-            android:layout_alignStart="@+id/buttonUpdate" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Robot Status:"
+            android:id="@+id/RobotStatus"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#ffffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textViewRobotStatus"
+            android:layout_toRightOf="@+id/RobotStatus"
+            android:layout_alignParentTop="true"
+            android:textColor="#ffffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Map:"
+            android:id="@+id/textViewMap"
+            android:layout_below="@+id/RobotStatus"
+            android:layout_alignParentLeft="true"
+            android:textColor="#ffffffff" />
+
+        <EditText
+            android:id="@+id/editTextMap"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:layout_below="@+id/textViewMap"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:editable="false"
+            android:textSize="14sp"/>
 
         <ToggleButton
             android:layout_width="wrap_content"
@@ -41,18 +71,42 @@
             android:textOn="Tilt Control On"
             android:id="@+id/toggleButtonTilt"
             android:checked="false"
-            android:layout_below="@+id/textViewMap"
-            android:layout_alignRight="@+id/relativeLayout"
-            android:layout_alignEnd="@+id/relativeLayout" />
+            android:layout_below="@+id/imageButtonAnticlockwise"/>
 
-        <EditText
-            android:id="@+id/robotStatus"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background"
-            android:layout_below="@+id/textViewRobotStatus"
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageButtonAnticlockwise"
+            android:background="@mipmap/anticlockwise"
+            android:layout_below="@+id/editTextMap"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageButtonForward"
+            android:background="@mipmap/forward"
+            android:layout_below="@+id/editTextMap"
+            android:layout_toRightOf="@+id/imageButtonAnticlockwise"
+            android:layout_toEndOf="@+id/imageButtonAnticlockwise" />
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageButtonClockwise"
+            android:background="@mipmap/clockwise"
+            android:layout_alignTop="@+id/imageButtonForward"
+            android:layout_toRightOf="@+id/imageButtonForward"
+            android:layout_toEndOf="@+id/imageButtonForward" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F1"
+            android:id="@+id/buttonF1"
+            android:layout_below="@+id/editTextMap"
+            android:layout_toRightOf="@+id/imageButtonClockwise"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -63,115 +117,40 @@
             android:layout_toRightOf="@+id/buttonF1"
             android:layout_toEndOf="@+id/buttonF1" />
 
-        <RelativeLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:id="@+id/relativeLayout"
-            android:layout_below="@+id/toggleButtonTilt"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/imageButtonRight"
-                android:background="@drawable/ic_right"
-                android:layout_alignTop="@+id/imageButtonLeft"
-                android:layout_toRightOf="@+id/imageButtonDown"
-                android:layout_toEndOf="@+id/imageButtonDown" />
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/imageButtonLeft"
-                android:background="@drawable/ic_left"
-                android:layout_above="@+id/imageButtonDown"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/imageButtonDown"
-                android:background="@drawable/ic_down"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/imageButtonLeft"
-                android:layout_toEndOf="@+id/imageButtonLeft" />
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/imageButtonUp"
-                android:background="@drawable/ic_up"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageButtonLeft"
-                android:layout_toEndOf="@+id/imageButtonLeft" />
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Robot Status:"
-            android:id="@+id/textViewRobotStatus"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textColor="#ffffffff" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Map:"
-            android:id="@+id/textViewMap"
-            android:layout_below="@+id/robotStatus"
-            android:textColor="#ffffffff" />
-
-        <EditText
-            android:id="@+id/map"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background"
-            android:layout_below="@+id/textViewMap"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Explore"
             android:id="@+id/buttonExplore"
-            android:layout_below="@+id/relativeLayout"
-            android:layout_toRightOf="@+id/buttonF2"
-            android:layout_toEndOf="@+id/buttonF2" />
+            android:layout_below="@+id/switchAutoUpdateMap"
+            android:layout_toRightOf="@+id/buttonUpdate" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shorest Path"
+            android:text="Shortest Path"
             android:id="@+id/buttonShortestPath"
-            android:layout_alignTop="@+id/buttonExplore"
-            android:layout_toRightOf="@+id/buttonExplore"
-            android:layout_toEndOf="@+id/buttonExplore" />
+            android:layout_below="@+id/switchAutoUpdateMap"
+            android:layout_toRightOf="@+id/buttonExplore" />
 
-        <Button
+        <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="F1"
-            android:id="@+id/buttonF1"
-            android:layout_below="@+id/relativeLayout"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:text="Auto Update Map"
+            android:id="@+id/switchAutoUpdateMap"
+            android:checked="false"
+            android:showText="true"
+            android:textColor="#ffffffff"
+            android:layout_below="@+id/buttonF1"
+            android:layout_toRightOf="@+id/imageButtonClockwise"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update Map"
             android:id="@+id/buttonUpdate"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/buttonF2"
-            android:layout_toEndOf="@+id/buttonF2" />
+            android:layout_toRightOf="@+id/imageButtonClockwise"
+            android:layout_below="@+id/switchAutoUpdateMap"/>
     </RelativeLayout>
 
 </RelativeLayout>

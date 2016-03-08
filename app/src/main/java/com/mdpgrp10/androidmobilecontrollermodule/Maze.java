@@ -39,7 +39,6 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     private static Bitmap robotLeft;
     private static Bitmap robotRight;
     public static Queue<String> robotActionQueue;
-    public static Queue<String> robotActionQueue1;
     private RobotThread robotThread;
 
     public Maze(Context context){
@@ -76,14 +75,14 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         cellWidth = tmpWidth < tmpHeight ? tmpWidth : tmpHeight;
         mapStartX = SCREEN_PADDING;
         mapStartY = SCREEN_PADDING;
-        Bitmap tmpRobotUp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_up);
-        Bitmap tmpRobotDown = BitmapFactory.decodeResource(getResources(), R.drawable.ic_down);
-        Bitmap tmpRobotLeft = BitmapFactory.decodeResource(getResources(), R.drawable.ic_left);
-        Bitmap tmpRobotRight = BitmapFactory.decodeResource(getResources(), R.drawable.ic_right);
-        robotUp = Bitmap.createScaledBitmap(tmpRobotUp, (int)cellWidth*2, (int)cellWidth*2, true);
-        robotDown = Bitmap.createScaledBitmap(tmpRobotDown, (int)cellWidth*2, (int)cellWidth*2, true);
-        robotLeft = Bitmap.createScaledBitmap(tmpRobotLeft, (int)cellWidth*2, (int)cellWidth*2, true);
-        robotRight = Bitmap.createScaledBitmap(tmpRobotRight, (int)cellWidth*2, (int)cellWidth*2, true);
+        Bitmap tmpRobotUp = BitmapFactory.decodeResource(getResources(), R.mipmap.pika_up);
+        Bitmap tmpRobotDown = BitmapFactory.decodeResource(getResources(), R.mipmap.pika_down);
+        Bitmap tmpRobotLeft = BitmapFactory.decodeResource(getResources(), R.mipmap.pika_left);
+        Bitmap tmpRobotRight = BitmapFactory.decodeResource(getResources(), R.mipmap.pika_right);
+        robotUp = Bitmap.createScaledBitmap(tmpRobotUp, (int)cellWidth*3, (int)cellWidth*3, true);
+        robotDown = Bitmap.createScaledBitmap(tmpRobotDown, (int)cellWidth*3, (int)cellWidth*3, true);
+        robotLeft = Bitmap.createScaledBitmap(tmpRobotLeft, (int)cellWidth*3, (int)cellWidth*3, true);
+        robotRight = Bitmap.createScaledBitmap(tmpRobotRight, (int)cellWidth*3, (int)cellWidth*3, true);
         initiateMap();
 
         robotThread = new RobotThread(sh, this, mapStartX + SCREEN_PADDING, mapStartY + SCREEN_PADDING, cellWidth);
@@ -157,7 +156,6 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
                 /*int currentRow = i / MAP_COLS;
                 int currentCol = i - MAP_COLS * currentRow;*/
 
-
                 int currentCol = i / MAP_ROWS;
                 int currentRow = i - MAP_ROWS * currentCol;
 
@@ -182,6 +180,4 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder holder) {
 
     }
-
-
 }
