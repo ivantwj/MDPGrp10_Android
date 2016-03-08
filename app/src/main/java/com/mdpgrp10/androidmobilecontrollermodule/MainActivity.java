@@ -327,11 +327,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                         RobotStatus.setText(" Moving...");
                     }
 
-                    if (readMessage.contains("GRID")){
+                    else if (readMessage.contains("GRID")){
                         updateMap(readMessage, "simulate", true);
                     }
 
-                    if (readMessage.contains(" ")){
+                    else if (readMessage.contains(" ")){
                         updateMap(readMessage, "from algo", true);
                         MapGrid.setText(readMessage);
                         RobotStatus.setText(" Stopped");
@@ -448,6 +448,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         }
 
         else if (action.contains("simulate")) {
+            MapQueue.remove();
             MapQueue.add(updatedMap);
             if (autoUpdateMap)
                 maze.robotChange(updatedMap);
