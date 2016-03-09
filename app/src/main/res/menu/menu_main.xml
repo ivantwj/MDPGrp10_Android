@@ -2,17 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mdpgrp10.androidmobilecontrollermodule.MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_discoverable" android:title="@string/action_discoverable"
+    <item android:id="@+id/action_discoverable" android:title="Set Discoverable"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_connectB"
         android:title="Connect"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_setCommands"
         android:title="Set Commands"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_setXy"
         android:title="Set Coordinates"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 </menu>

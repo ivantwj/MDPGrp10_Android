@@ -48,6 +48,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         sh = getHolder();
         sh.addCallback(this);
         paint = new Paint();
+        bluepaint = new Paint();
         this.setKeepScreenOn(true);
     }
 
@@ -57,6 +58,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         sh = getHolder();
         sh.addCallback(this);
         paint = new Paint();
+        bluepaint = new Paint();
         this.setKeepScreenOn(true);
     }
 
@@ -132,11 +134,11 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         float mapWidth = currentX + cellWidth * MAP_COLS;
         float mapHeight = currentY + cellWidth * MAP_ROWS;
 
-        paint.setColor(Color.GRAY);
+        paint.setColor(Color.rgb(126, 152, 44));//green
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRoundRect(new RectF(mapStartX, mapStartY, mapWidth+SCREEN_PADDING, mapHeight+SCREEN_PADDING), 10, 10, paint);
 
-        paint.setColor(Color.YELLOW);
+        paint.setColor(Color.WHITE);
         paint.setStrokeWidth(1);
         paint.setStyle(Paint.Style.STROKE);
         for(int i = 0; i < MAP_COLS+1; i++){
@@ -150,8 +152,10 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         String[] info = mapInfo.split(" ");
-        paint.setColor(Color.RED);
+        paint.setColor(Color.DKGRAY);
         paint.setStyle(Paint.Style.FILL);
+        bluepaint.setColor(Color.rgb(0, 177, 177)); //blue
+        bluepaint.setStyle(Paint.Style.FILL);
         RectF rect = new RectF();
         for(int i = 0; i < info.length; i++){
             if(Integer.valueOf(info[i]) == 1){
@@ -170,7 +174,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
                 rect.set(left, top, right, bottom);
                 canvas.drawRect(rect, paint);
             }
-            /*else if (Integer.valueOf(info[i]) == -1){
+            else if (Integer.valueOf(info[i]) == -1){
                 int currentCol = i / MAP_ROWS;
                 int currentRow = i - MAP_ROWS * currentCol;
 
@@ -182,7 +186,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d(TAG, "paint block: " + currentRow + ", " + currentCol);
                 rect.set(left, top, right, bottom);
                 canvas.drawRect(rect, bluepaint);
-            }*/
+            }
         }
     }
 
