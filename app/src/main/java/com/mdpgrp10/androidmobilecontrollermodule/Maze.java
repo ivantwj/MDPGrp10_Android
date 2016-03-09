@@ -30,6 +30,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder sh;
     private Canvas canvas;
     private Paint paint;
+    private Paint bluepaint;
 
     private int mapStartX = 0, mapStartY = 0;
     private float cellWidth;
@@ -65,6 +66,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
         sh = getHolder();
         sh.addCallback(this);
         paint = new Paint();
+        bluepaint  = new Paint();
         this.setKeepScreenOn(true);
     }
 
@@ -168,6 +170,19 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
                 rect.set(left, top, right, bottom);
                 canvas.drawRect(rect, paint);
             }
+            /*else if (Integer.valueOf(info[i]) == -1){
+                int currentCol = i / MAP_ROWS;
+                int currentRow = i - MAP_ROWS * currentCol;
+
+                float left = mapStartX + SCREEN_PADDING + currentCol * cellWidth;
+                float top = mapStartY + SCREEN_PADDING + currentRow * cellWidth;
+                float right = left + cellWidth;
+                float bottom = top + cellWidth;
+
+                Log.d(TAG, "paint block: " + currentRow + ", " + currentCol);
+                rect.set(left, top, right, bottom);
+                canvas.drawRect(rect, bluepaint);
+            }*/
         }
     }
 

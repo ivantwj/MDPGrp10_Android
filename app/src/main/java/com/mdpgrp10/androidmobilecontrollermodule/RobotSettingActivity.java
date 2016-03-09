@@ -98,7 +98,7 @@ public class RobotSettingActivity extends DialogFragment {
 
         String firstMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
         ((MainActivity)getActivity()).updateMap(firstMap, "nothing", false);
-        ((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
+        //((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
 
         Toast.makeText(getActivity(), "Robot set: " + firstMap, Toast.LENGTH_SHORT).show();
         getDialog().dismiss();

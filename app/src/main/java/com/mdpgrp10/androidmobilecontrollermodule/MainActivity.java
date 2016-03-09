@@ -322,14 +322,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //updateMap(readMessage, true);
 
-                    if(readMessage.contains("h")){
+                    if(readMessage.contains("|")){
                         updateMap(MapQueue.poll(), readMessage, true);
                         RobotStatus.setText(" Moving...");
                     }
 
-                    else if (readMessage.contains("GRID")){
+                    /*else if (readMessage.contains("GRID")){
                         updateMap(readMessage, "simulate", true);
-                    }
+                    }*/
 
                     else if (readMessage.contains(" ")){
                         updateMap(readMessage, "from algo", true);
@@ -407,6 +407,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     /*------------------------------------Map Methods------------------------------------*/
     public void updateMap(String mapInfo, String action, boolean init) {
+        sendMessage("initial map:" + MapQueue.peek(),true);
         String Map;
         String updatedMap = mapInfo;
         String constantMap = mapInfo.substring(0, 10);
@@ -447,23 +448,38 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             maze.robotChange(updatedMap);
         }
 
-        else if (action.contains("simulate")) {
+        /*else if (action.contains("simulate")) {
             MapQueue.remove();
             MapQueue.add(updatedMap);
             if (autoUpdateMap)
                 maze.robotChange(updatedMap);
-        }
+        }*/
 
         else if (action.contains("from algo")){
-            //MapQueue.add("GRID 15 20 1 1 1 0 "+ updatedMap);
-            if (autoUpdateMap)
-                maze.robotChange("GRID 15 20 1 1 1 0 " + updatedMap);
+            if (autoUpdateMap){
+                int spaceCounter1 = 0;
+                String tmpMapInfo = MapQueue.poll();
+                while (spaceCounter1 <= 6) {
+                    tmpIndex = tmpMapInfo.indexOf(" ");
+                    spaceCounter1++;
+                    if (spaceCounter1 > 3) {
+                        tmpRobot[spaceCounter1 - 4] = tmpMapInfo.substring(0, tmpIndex);
+                        //sendMessage("robot thing:" + tmpRobot[spaceCounter - 4],true);
+                    }
+                    tmpMapInfo = tmpMapInfo.substring(tmpIndex + 1);
+                }
 
+                String RobotInfo1 = tmpRobot[0] + " " + tmpRobot[1] + " " + tmpRobot[2] + " " + tmpRobot[3];
+                sendMessage("robot is at:" + RobotInfo1,true);
+
+                maze.robotChange("GRID 15 20 " + RobotInfo1 + updatedMap);
+                MapQueue.add("GRID 15 20 " + RobotInfo1 + " " + updatedMap);
+            }
         }
 
-        else if (action.contains("h")) {
+        else if (action.contains("|")) {
             RobotHead = getRobotHead(x, y, xHead, yHead);
-            if (action.equals("hW1|")) {
+            if (action.equals("W1|")) {
                 if (RobotHead.equals("up")) {
                     y = y - 1;
                     yHead = yHead - 1;
@@ -478,7 +494,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     xHead = xHead + 1;
                 }
             }
-            if (action.equals("hA90|")) {
+            if (action.equals("A90|")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead - 1;
                     yHead = yHead + 1;
@@ -494,7 +510,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 }
             }
 
-            if (action.equals("hD90|")) {
+            if (action.equals("D90|")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead + 1;
                     yHead = yHead + 1;
@@ -518,17 +534,13 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             System.out.println("map is: " + updatedMap);
             MapQueue.add(updatedMap);
             if (autoUpdateMap) {
-                sendMessage("auto update map:" + updatedMap, true);
+                //sendMessage("auto update map:" + updatedMap, true);
                 maze.robotChange(updatedMap);
             }
         }
 
-        if (!init) {
-            sendMessage("Robot_init(" + updatedMap.substring(5, 18) + ")", true);
-
-        }
         Log.d(TAG, "Map changed.");
-        //return updatedMap;
+        sendMessage("ending map:" + MapQueue.peek(),true);
     }
 
     public String getRobotHead(int x, int y, int xHead, int yHead){
@@ -546,9 +558,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             return "N";
     }
 
-    public void SendStartPos(int x,int y,String head) {
+    /*public void SendStartPos(int x,int y,String head) {
         sendMessage("robot_init(x=" + x + ",y=" + y + ",head=" + head + ")", true);
-    }
+    }*/
 
 /*------------------------------------Tilt Control Methods------------------------------------*/
     @Override
