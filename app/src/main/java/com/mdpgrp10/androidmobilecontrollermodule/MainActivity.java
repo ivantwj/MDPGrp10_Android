@@ -54,14 +54,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
-    //private static final String PREFS_NAME = "bt_remote_keyconfig";
 
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
-
-    /*private static final int REQUEST_SAVE_BUTTON = 10;
-    private static final int REQUEST_COORD_BUTTON = 100;*/
 
     //Maze variables
     Maze maze;
@@ -148,10 +144,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 mChatService.start();
             }
         }
-
-        //mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        //if(sensorRegistered)
-            //sensorMgr.registerListener(MainActivity.this, sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
     }*/
 
     /*------------------------------------setupChat------------------------------------*/
@@ -278,9 +270,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             return;
         }
         if (message.length() > 0) {
-            //if(ack)
-            //    msgCounter ++;
-            //message = msgCounter + "," + message;
             byte[] send = message.getBytes();
             mChatService.write(send);
             Log.d(TAG, "MSG sent: " + new String(send));
@@ -315,12 +304,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     }
                     break;
                 case MESSAGE_WRITE:
-//                    byte[] writeBuf = (byte[]) msg.obj;
-//                    String writeMessage = new String(writeBuf);
                     break;
                 case MESSAGE_READ:
-                    // String ack ="-,";
-                    // MainActivity.this.sendMessage(ack, true);
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
@@ -331,8 +316,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
                     else if (readMessage.contains(" ")){
                         updateMaze(readMessage);
-                        //MapGrid.setText(readMessage);
-                        //RobotStatus.setText(" Moving...");
                     }
 
                     if (readMessage.contains(";")){
@@ -342,7 +325,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
                     if(D)
                         Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
-                        //RobotStatus.setText(readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
@@ -389,12 +371,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                     finish();
                 }
-            /*case REQUEST_SAVE_BUTTON //10
-                break;
-            case REQUEST_COORD_BUTTON //100:
-                break;*/
             default:
-                //onActivityResult_VoiceRecognition(requestCode, requestCode, data);
         }
     }
 
@@ -444,6 +421,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             obstacleInfo = updatedMap.substring(23);
 
         if (action.contains("nothing")) {
+            sendMessage("coordinate " + tmpRobot[0] + ", " + tmpRobot[1] + ")", true);
             maze.robotChange(updatedMap);
         }
 
@@ -505,7 +483,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             MapQueue.poll();
             MapQueue.add(updatedMap);
             if (autoUpdateMap) {
-                //sendMessage("auto update map:" + updatedMap, true);
                 maze.robotChange(updatedMap);
             }
         }
@@ -562,17 +539,17 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         history[1] = event.values[1];
 
             if (xChange > 2 && ToggleisSet){
-                //right
+                //clockwise
                 sendMessage(spf.getString(SET_RIGHT, SET_RIGHT_DEFAULT), true);
             }
 
             else if (xChange < -2 && ToggleisSet){
-                //left
+                //anticlockwise
                 sendMessage(spf.getString(SET_LEFT, SET_LEFT_DEFAULT), true);
             }
 
             if (yChange > 2 && ToggleisSet){
-                //up
+                //forward
                 sendMessage(spf.getString(SET_UP, SET_UP_DEFAULT), true);
             }
     }

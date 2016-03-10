@@ -26,7 +26,6 @@ public class RobotThread extends Thread {
     private float currentY;
     private String mapInfo;
     private String headPos;
-    //public Queue<String> ivanQueue;
 
     public RobotThread(SurfaceHolder surfaceHolder, Maze maze, float initialX, float initialY, float cellWidth){
         sh = surfaceHolder;
@@ -54,23 +53,11 @@ public class RobotThread extends Thread {
             try{
                 c = sh.lockCanvas(null);
                 synchronized (sh){
-                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
-                    Log.d(TAG, "updatedInfo[1]: " + currentY);
-                    Log.d(TAG, "updatedInfo[2]: " + headPos);
-                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                     n = maze.robotActionQueue.size();
                     System.out.println("the size of the queue is " + n);
 
                     decodeAction(maze.robotActionQueue.poll());
-                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
-                    Log.d(TAG, "updatedInfo[1]: " + currentY);
-                    Log.d(TAG, "updatedInfo[2]: " + headPos);
-                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                     maze.updateMap(currentX, currentY, headPos, mapInfo);
-                    /*Log.d(TAG, "updatedInfo[0]: " + currentX);
-                    Log.d(TAG, "updatedInfo[1]: " + currentY);
-                    Log.d(TAG, "updatedInfo[2]: " + headPos);
-                    Log.d(TAG, "updatedInfo[3]: " + mapInfo);*/
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -82,7 +69,6 @@ public class RobotThread extends Thread {
             }
         }
     }
-
 
     private void decodeAction(String newMapInfo){
         String[] updatedInfo = processMapDescriptor(newMapInfo);
@@ -96,7 +82,4 @@ public class RobotThread extends Thread {
     public void setRunning(boolean running){
         this.running = running;
     }
-
-
-
 }

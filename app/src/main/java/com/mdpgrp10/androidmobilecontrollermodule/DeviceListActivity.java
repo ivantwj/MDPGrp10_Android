@@ -182,5 +182,4 @@ public class DeviceListActivity extends Activity {
             }
         }
     };
-
 }

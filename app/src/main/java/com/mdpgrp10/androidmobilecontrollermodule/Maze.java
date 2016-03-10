@@ -174,7 +174,7 @@ public class Maze extends SurfaceView implements SurfaceHolder.Callback {
                 rect.set(left, top, right, bottom);
                 canvas.drawRect(rect, paint);
             }
-            else if (Integer.valueOf(info[i]) == -1){
+            else if (Integer.valueOf(info[i]) == 2){
                 int currentCol = i / MAP_ROWS;
                 int currentRow = i - MAP_ROWS * currentCol;
 

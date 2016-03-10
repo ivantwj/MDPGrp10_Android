@@ -55,7 +55,6 @@ public class RobotSettingActivity extends DialogFragment {
 
     private void checkPos(String x, String y){
         int posX = 1, posY = 1, headX, headY;
-        String sHead;
 
         Log.d(TAG, "X: " + x);
         if(x != null && (x.length()>0)) {
@@ -72,35 +71,28 @@ public class RobotSettingActivity extends DialogFragment {
             case R.id.robotUp:
                 headX = posX;
                 headY = posY - 1;
-                sHead = "up";
                 break;
             case R.id.robotDown:
                 headX = posX;
                 headY = posY + 1;
-                sHead = "down";
                 break;
             case R.id.robotLeft:
                 headX = posX -1;
                 headY = posY;
-                sHead = "left";
                 break;
             case R.id.robotRight:
                 headX = posX + 1;
                 headY = posY;
-                sHead = "right";
                 break;
             default:
                 headX = posX;
                 headY = posY + 1;
-                sHead = "";
                 break;
         }
 
         String firstMap = "GRID " + MAP_ROWS + " " + MAP_COLS + " " + posX + " " + posY + " " + headX + " " + headY + defaultMap.substring(18);
         ((MainActivity)getActivity()).updateRobot(firstMap, "nothing");
         ((MainActivity)getActivity()).MapQueue.add(firstMap);
-
-        //((MainActivity)getActivity()).SendStartPos(posX, posY, sHead);
 
         Toast.makeText(getActivity(), "Robot set: " + firstMap, Toast.LENGTH_SHORT).show();
         getDialog().dismiss();
