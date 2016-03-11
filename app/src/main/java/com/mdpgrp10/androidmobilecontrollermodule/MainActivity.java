@@ -421,7 +421,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             obstacleInfo = updatedMap.substring(23);
 
         if (action.contains("nothing")) {
-            sendMessage("coordinate " + tmpRobot[0] + ", " + tmpRobot[1] + ")", true);
+            sendMessage("coordinate (" + tmpRobot[0] + ", " + tmpRobot[1] + ")", true);
             maze.robotChange(updatedMap);
         }
 
