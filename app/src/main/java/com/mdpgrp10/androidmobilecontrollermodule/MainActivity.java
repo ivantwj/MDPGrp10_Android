@@ -308,20 +308,32 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
+                    try {
+                        if (readMessage.contains("W") || readMessage.contains("A") || readMessage.contains("D")) {
+                            updateRobot(MapQueue.poll(), readMessage);
+                            RobotStatus.setText(" Moving...");
+                        }
 
-                    if(readMessage.contains("|")){
-                        updateRobot(MapQueue.poll(), readMessage);
-                        RobotStatus.setText(" Moving...");
+                        else if (readMessage.contains(";")) {
+                            MapGrid.setText(readMessage);
+                            RobotStatus.setText(" Stopped");
+                        }
+
+                        else if (readMessage.length() > 15) {
+                            String addedSpace = fromObstacleInfo(readMessage);
+                            //String addedSpace = addSpace(readMessage);
+                            System.out.println("cool line: " + addedSpace);
+                            updateMaze(addedSpace);
+                        }
+                    }
+                    catch(Exception e){
+                        Toast.makeText(MainActivity.this, "Message not handled: " + readMessage, Toast.LENGTH_SHORT).show();
                     }
 
-                    else if (readMessage.contains(" ")){
-                        updateMaze(readMessage);
-                    }
-
-                    if (readMessage.contains(";")){
+                    /*if (readMessage.contains(";")){
                         MapGrid.setText(readMessage);
                         RobotStatus.setText(" Stopped");
-                    }
+                    }*/
 
                     if(D)
                         Toast.makeText(MainActivity.this, "Receive from BT: " + readMessage, Toast.LENGTH_SHORT).show();
@@ -340,6 +352,41 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private final void setStatus(int resId, boolean status) {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle(resId);
+    }
+
+    /*public String addSpace(String mdf){
+        String mdfWithSpace = "";
+        int i = 0;
+        for(; i<mdf.length()-1; i++){
+            mdfWithSpace += mdf.charAt(i) + " ";
+        }
+        mdfWithSpace += mdf.charAt(i);
+        return mdfWithSpace;
+    }*/
+
+    public String fromObstacleInfo(String obstacleInfo){         //this method is meant to be used by android
+        int i=0;
+        String obstacleInfoWithSpace = "";
+        for(; i< obstacleInfo.length()-1; i++){
+            obstacleInfoWithSpace += fromSuperDecimal(obstacleInfo.charAt(i)) + " ";
+        }
+        obstacleInfoWithSpace += fromSuperDecimal(obstacleInfo.charAt(i));
+        return obstacleInfoWithSpace;
+    }
+
+    public static String fromSuperDecimal(char superDecimal){           //this method is meant to be used by android
+        char[] ternary = new char[5];
+        int value;
+        if(superDecimal <= '9')
+            value = superDecimal - '0';
+        else
+            value = superDecimal - 'a' + 10;
+        ternary[0] = (char) (value / 9 + '0');
+        ternary[1] = ' ';
+        ternary[2] = (char) ((value / 3) % 3 + '0');
+        ternary[3] = ' ';
+        ternary[4] = (char) (value % 3 + '0');
+        return new String(ternary);
     }
 
     private final void setStatus(CharSequence subTitle, boolean status) {
@@ -421,13 +468,13 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             obstacleInfo = updatedMap.substring(23);
 
         if (action.contains("nothing")) {
-            sendMessage("coordinate (" + tmpRobot[0] + ", " + tmpRobot[1] + ")", true);
+            //sendMessage("coordinate (" + tmpRobot[0] + ", " + tmpRobot[1] + ")", true);
             maze.robotChange(updatedMap);
         }
 
-        else if (action.contains("|")) {
+        else if (action.contains("W") || action.contains("A") || action.contains("D")) {
             RobotHead = getRobotHead(x, y, xHead, yHead);
-            if (action.equals("W1|")) {
+            if (action.contains("W")) {
                 if (RobotHead.equals("up")) {
                     y = y - 1;
                     yHead = yHead - 1;
@@ -442,7 +489,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     xHead = xHead + 1;
                 }
             }
-            else if (action.equals("A90|")) {
+            else if (action.contains("A")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead - 1;
                     yHead = yHead + 1;
@@ -458,7 +505,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 }
             }
 
-            else if (action.equals("D90|")) {
+            else if (action.contains("D")) {
                 if (RobotHead.equals("up")) {
                     xHead = xHead + 1;
                     yHead = yHead + 1;

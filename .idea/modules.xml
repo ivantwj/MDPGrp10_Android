@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidMobileControllerModule.iml" filepath="$PROJECT_DIR$/AndroidMobileControllerModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MDPGrp10_Android.iml" filepath="$PROJECT_DIR$/MDPGrp10_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
-
