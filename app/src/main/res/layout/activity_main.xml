@@ -154,6 +154,15 @@
             android:id="@+id/buttonUpdate"
             android:layout_below="@+id/buttonF1"
             android:layout_toRightOf="@+id/imageButtonClockwise"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear Map"
+            android:id="@+id/buttonClearMap"
+            android:layout_above="@+id/editTextMap"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public boolean autoUpdateMap = false;
     private Button ButtonUpdateMap;
     Queue<String> MapQueue = new LinkedList<String>();
+    private Button ButtonClearMap;
 
     //Bluetooth variables
     private String mConnectedDeviceName = null;
@@ -250,6 +251,15 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             public void onClick(View v) {
                 // update the map
                 maze.robotChange(MapQueue.peek());
+            }
+        });
+
+        ButtonClearMap = (Button) findViewById(R.id.buttonClearMap);
+        ButtonClearMap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // clear the map queue
+                MapQueue.clear();
+                Toast.makeText(MainActivity.this, "Map Cleared", Toast.LENGTH_LONG).show();
             }
         });
     }
