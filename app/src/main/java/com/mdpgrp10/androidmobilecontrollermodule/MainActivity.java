@@ -319,7 +319,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     try {
-                        if (readMessage.contains("W") || readMessage.contains("A") || readMessage.contains("D")) {
+                        if (readMessage.contains("F") || readMessage.contains("A") || readMessage.contains("D")) {
                             updateRobot(MapQueue.poll(), readMessage);
                             RobotStatus.setText(" Moving...");
                         }
@@ -482,9 +482,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             maze.robotChange(updatedMap);
         }
 
-        else if (action.contains("W") || action.contains("A") || action.contains("D")) {
+        else if (action.contains("F") || action.contains("A") || action.contains("D")) {
             RobotHead = getRobotHead(x, y, xHead, yHead);
-            if (action.contains("W")) {
+            if (action.contains("F")) {
                 if (RobotHead.equals("up")) {
                     y = y - 1;
                     yHead = yHead - 1;

@@ -15,9 +15,9 @@ public class Utils {
 
     public static final String SET_EXPLORE_DEFAULT = "pexplore" + "\n";
     public static final String SET_SHORTEST_PATH_DEFAULT = "pshortestPath" + "\n";
-    public static final String SET_UP_DEFAULT = "hW1|";
-    public static final String SET_LEFT_DEFAULT = "hA90|";
-    public static final String SET_RIGHT_DEFAULT = "hD90|";
+    public static final String SET_UP_DEFAULT = "hF100|";
+    public static final String SET_LEFT_DEFAULT = "hA9000|";
+    public static final String SET_RIGHT_DEFAULT = "hD9000|";
     public static final String SET_CMD1_DEFAULT = "custom command 1";
     public static final String SET_CMD2_DEFAULT = "custom command 2";
 
